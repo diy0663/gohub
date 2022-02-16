@@ -1,8 +1,7 @@
 package routes
 
 import (
-	"net/http"
-
+	"github.com/diy0663/gohub/app/http/controllers/api/v1/auth"
 	"github.com/gin-gonic/gin"
 )
 
@@ -13,11 +12,12 @@ func RegisterAPIRoutes(r *gin.Engine) {
 
 	// 这里其实就是个分组而已
 	{
-		v1.GET("/", func(c *gin.Context) {
-			c.JSON(http.StatusOK, gin.H{
-				"hello": "world",
-			})
-		})
+		authGroup := v1.Group("/auth")
+
+		{
+			signupController := new(auth.SignupController)
+			authGroup.POST("/signup/phone/exist", signupController.IsPhoneExist)
+		}
 
 	}
 }

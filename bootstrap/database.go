@@ -42,4 +42,6 @@ func SetupDB() {
 	// 设置每个链接的过期时间
 	database.SQLDB.SetConnMaxLifetime(time.Duration(config.GetInt("database.mysql.max_life_seconds")) * time.Second)
 
+	// todo 迁移表结构,线上不建议这么干
+	// database.DB.AutoMigrate(&user.User{})
 }
