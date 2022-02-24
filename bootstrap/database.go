@@ -7,9 +7,9 @@ import (
 
 	"github.com/diy0663/go_project_packages/config"
 	"github.com/diy0663/gohub/pkg/database"
+	"github.com/diy0663/gohub/pkg/logger"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
-	"gorm.io/gorm/logger"
 )
 
 // 被main.go调用,用于 初始化数据库连接
@@ -35,7 +35,7 @@ func SetupDB() {
 
 	}
 
-	database.Connect(dbConfig, logger.Default.LogMode(logger.Info))
+	database.Connect(dbConfig, logger.NewGormLogger())
 	database.SQLDB.SetMaxOpenConns(config.GetInt("database.mysql.max_open_connections"))
 	// 设置最大空闲连接数
 	database.SQLDB.SetMaxIdleConns(config.GetInt("database.mysql.max_idle_connections"))
