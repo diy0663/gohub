@@ -49,8 +49,6 @@ github.com/cncf/udpa/go v0.0.0-20201120205902-5459f2c99403/go.mod h1:WmhPx2Nbnht
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
-github.com/diy0663/go_project_packages v0.0.0-20220215025521-e2463c19afb1 h1:/7B272yM7prcOY/egVtKFXGwumDwfa9Va946ky/lMFU=
-github.com/diy0663/go_project_packages v0.0.0-20220215025521-e2463c19afb1/go.mod h1:Wwm1qUCN23qcRbczg6M+PJVabbgGFzgjOSW7BDNqEJ8=
 github.com/diy0663/go_project_packages v0.0.0-20220217094304-3e1af9e70c74 h1:ShMJqKiAtO1PQHdZbKeEc5G1zFhjBDJbiktnvaLV2cw=
 github.com/diy0663/go_project_packages v0.0.0-20220217094304-3e1af9e70c74/go.mod h1:fogfZ/9ZTAuNYQXUI1SBFo3MwYU9BSSlS/97Jt6EdSI=
 github.com/envoyproxy/go-control-plane v0.9.0/go.mod h1:YTl/9mNaCwkRvm6d1a2C3ymFceY/DCBVvsKhRF0iEA4=
