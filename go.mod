@@ -3,7 +3,7 @@ module github.com/diy0663/gohub
 go 1.17
 
 require (
-	github.com/diy0663/go_project_packages v0.0.0-20220215025521-e2463c19afb1
+	github.com/diy0663/go_project_packages v0.0.0-20220217094304-3e1af9e70c74
 	github.com/gin-gonic/gin v1.7.7
 	gorm.io/driver/mysql v1.2.3
 	gorm.io/gorm v1.22.5
@@ -34,6 +34,7 @@ require (
 	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/spf13/viper v1.10.1 // indirect
 	github.com/subosito/gotenv v1.2.0 // indirect
+	github.com/thedevsaddam/govalidator v1.9.10 // indirect
 	github.com/ugorji/go/codec v1.1.7 // indirect
 	golang.org/x/crypto v0.0.0-20211108221036-ceb1ce70b4fa // indirect
 	golang.org/x/sys v0.0.0-20220209214540-3681064d5158 // indirect
