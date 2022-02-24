@@ -31,7 +31,7 @@ func (sc *SignupController) IsPhoneExist(c *gin.Context) {
 		return
 	}
 
-	err := requests.ValidValidateSignupPhoneExist(&request, c)
+	err := requests.ValidateSignupPhoneExist(&request, c)
 	if len(err) > 0 {
 		c.AbortWithStatusJSON(http.StatusUnprocessableEntity, gin.H{
 			"errors": err,
@@ -41,6 +41,38 @@ func (sc *SignupController) IsPhoneExist(c *gin.Context) {
 	// 检查数据库并返回响应
 	c.JSON(http.StatusOK, gin.H{
 		"exists": user.IsPhoneExist(request.Phone),
+	})
+
+}
+
+// 验证邮箱是否已注册
+func (sc *SignupController) IsEmailExist(c *gin.Context) {
+
+	// 初始化验证参数request数据
+	request := requests.SignupEmailExistRequest{}
+
+	// 解析json (在这里限定了传参要json格式)
+	if err := c.ShouldBindJSON(&request); err != nil {
+		// 解析失败，返回 422 状态码和错误信息
+		c.AbortWithStatusJSON(http.StatusUnprocessableEntity, gin.H{
+			"error": err.Error(),
+		})
+		// 打印错误信息
+		fmt.Println(err.Error())
+		// 出错了，中断请求
+		return
+	}
+
+	err := requests.ValidateSignupEmailExist(&request, c)
+	if len(err) > 0 {
+		c.AbortWithStatusJSON(http.StatusUnprocessableEntity, gin.H{
+			"errors": err,
+		})
+		return
+	}
+	// 检查数据库并返回响应
+	c.JSON(http.StatusOK, gin.H{
+		"exists": user.IsEmailExist(request.Email),
 	})
 
 }
