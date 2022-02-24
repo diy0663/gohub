@@ -17,6 +17,7 @@ func init() {
 
 func main() {
 
+	bootstrap.SetupLogger()
 	router := gin.New()
 	bootstrap.SetupDB()
 	bootstrap.SetUpRoute(router)
