@@ -38,6 +38,11 @@ func NewCaptcha() *Captcha {
 	return internalCaptcha
 }
 
+// GenerateCaptcha 生成图片验证码
+func (c *Captcha) GenerateCaptcha() (id string, b64s string, err error) {
+	return c.Base64Captcha.Generate()
+}
+
 func (c *Captcha) Verify(id, answer string) (match bool) {
 	if !app.IsProduction() && id == config.GetString("captcha.testing_key") {
 		return true
