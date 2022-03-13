@@ -5,6 +5,8 @@ import (
 	"os"
 
 	"github.com/diy0663/gohub/app/cmd"
+	"github.com/diy0663/gohub/app/cmd/make"
+
 	"github.com/diy0663/gohub/bootstrap"
 	"github.com/diy0663/gohub/pkg/console"
 	"github.com/spf13/cobra"
@@ -36,6 +38,8 @@ func main() {
 		cmd.CmdServe,
 		cmd.KeyCmd,
 		cmd.TinkerCmd,
+		make.CmdMake,
+		cmd.CmdTestCommand,
 	)
 
 	// 默认执行 CmdServe 命令
