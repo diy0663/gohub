@@ -1,3 +1,3 @@
-module github.com/diy0663/gohub
+module gohub
 
 go 1.17
