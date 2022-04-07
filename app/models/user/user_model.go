@@ -2,8 +2,6 @@ package user
 
 import (
 	"gohub/app/models"
-
-	"github.com/GoAdminGroup/go-admin/plugins/admin/models"
 )
 
 type User struct {
