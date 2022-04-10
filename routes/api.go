@@ -20,9 +20,14 @@ func RegisterAPIRoutes(r *gin.Engine) {
 
 		authGroup := v1.Group("/auth")
 		{
+			// 验证手机号是否已存在
 			sign_up_controller := new(auth.SignupController)
 			authGroup.POST("/signup/phone/exist", sign_up_controller.IsPhoneExist)
 
+			// 生产图片验证码
+			verify_controller := new(auth.VerifyCodeController)
+			authGroup.POST("/verify-codes/captcha", verify_controller.ShowCaptcha)
 		}
+
 	}
 }
