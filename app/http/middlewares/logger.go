@@ -2,10 +2,10 @@ package middlewares
 
 import (
 	"bytes"
-	helpers "gohub/pkg/helper"
 	"io/ioutil"
 	"time"
 
+	"github.com/diy0663/go_project_packages/helper"
 	"github.com/diy0663/go_project_packages/logger"
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/cast"
@@ -43,7 +43,7 @@ func Logger() gin.HandlerFunc {
 			zap.String("ip", c.ClientIP()),
 			zap.String("user-agent", c.Request.UserAgent()),
 			zap.String("errors", c.Errors.ByType(gin.ErrorTypePrivate).String()),
-			zap.String("time", helpers.MicrosecondsStr(cost)),
+			zap.String("time", helper.MicrosecondsStr(cost)),
 		}
 		if c.Request.Method == "POST" || c.Request.Method == "PUT" || c.Request.Method == "DELETE" {
 			// 请求的内容

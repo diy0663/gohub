@@ -100,6 +100,8 @@ github.com/diy0663/go_project_packages v0.0.0-20220410030121-8682ae5e4c4c h1:miE
 github.com/diy0663/go_project_packages v0.0.0-20220410030121-8682ae5e4c4c/go.mod h1:8olmhNNP1hmSKI0KtjkE4V2Dw0l1T8cI/Ef9G3ey2RA=
 github.com/diy0663/go_project_packages v0.0.0-20220410032837-17c30c1c0809 h1:i9ixT4ptIh1ZR8lA+Cehf91ZeLLljPMKaiSDLnvqKW4=
 github.com/diy0663/go_project_packages v0.0.0-20220410032837-17c30c1c0809/go.mod h1:8olmhNNP1hmSKI0KtjkE4V2Dw0l1T8cI/Ef9G3ey2RA=
+github.com/diy0663/go_project_packages v0.0.0-20220410070828-56a40f6dcff3 h1:zVU8bo1JD8VUQ5aQmIbancH1U0yJSvCg3PsEukxXqtg=
+github.com/diy0663/go_project_packages v0.0.0-20220410070828-56a40f6dcff3/go.mod h1:5BP8YEJbcAY8v21nUSnTD1FYY2l/J1ZnS8XpD8qEgKw=
 github.com/envoyproxy/go-control-plane v0.9.0/go.mod h1:YTl/9mNaCwkRvm6d1a2C3ymFceY/DCBVvsKhRF0iEA4=
 github.com/envoyproxy/go-control-plane v0.9.1-0.20191026205805-5f8ba28d4473/go.mod h1:YTl/9mNaCwkRvm6d1a2C3ymFceY/DCBVvsKhRF0iEA4=
 github.com/envoyproxy/go-control-plane v0.9.4/go.mod h1:6rpuAdCZL397s3pYoYcLgu1mIlRU8Am5FuJP05cCM98=
