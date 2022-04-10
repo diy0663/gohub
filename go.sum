@@ -103,6 +103,8 @@ github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f h1:lO4WD4F/r
 github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f/go.mod h1:cuUVRXasLTGF7a8hSLbxyZXjz+1KgoB3wDUb6vlszIc=
 github.com/diy0663/go_project_packages v0.0.0-20220410072333-ed589d82c7e3 h1:rF+jGovtOcv2NMnSxSX0bsMFKp9yhPGOTX7uLaB4eE0=
 github.com/diy0663/go_project_packages v0.0.0-20220410072333-ed589d82c7e3/go.mod h1:ebQW0OtUWJcsFL5MDgfQDrdT32e1sLI82sngs+uMmYQ=
+github.com/diy0663/go_project_packages v0.0.0-20220410074433-6c9a954e467d h1:NENkVOKRvbDeW50YQYU+9/l/Dcx612PV1H6h7cCmMZA=
+github.com/diy0663/go_project_packages v0.0.0-20220410074433-6c9a954e467d/go.mod h1:VscpG7dys0L86WZUPoqlpGN94srId3e0mQKEFwcDDF0=
 github.com/envoyproxy/go-control-plane v0.9.0/go.mod h1:YTl/9mNaCwkRvm6d1a2C3ymFceY/DCBVvsKhRF0iEA4=
 github.com/envoyproxy/go-control-plane v0.9.1-0.20191026205805-5f8ba28d4473/go.mod h1:YTl/9mNaCwkRvm6d1a2C3ymFceY/DCBVvsKhRF0iEA4=
 github.com/envoyproxy/go-control-plane v0.9.4/go.mod h1:6rpuAdCZL397s3pYoYcLgu1mIlRU8Am5FuJP05cCM98=

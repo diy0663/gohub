@@ -3,7 +3,7 @@ module gohub
 go 1.17
 
 require (
-	github.com/diy0663/go_project_packages v0.0.0-20220410072333-ed589d82c7e3
+	github.com/diy0663/go_project_packages v0.0.0-20220410074433-6c9a954e467d
 	github.com/gin-gonic/gin v1.7.7
 	github.com/spf13/cast v1.4.1
 	github.com/thedevsaddam/govalidator v1.9.10
