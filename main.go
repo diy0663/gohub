@@ -15,9 +15,10 @@ func init() {
 
 func main() {
 
-	router := gin.New()
 	bootstrap.SetupLogger()
 	bootstrap.SetupDB()
+	gin.SetMode(gin.ReleaseMode)
+	router := gin.New()
 	bootstrap.SetupRoute(router)
 
 	err := router.Run(":" + config.GetString("app.port"))
