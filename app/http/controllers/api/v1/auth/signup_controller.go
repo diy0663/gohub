@@ -4,8 +4,8 @@ import (
 	v1 "gohub/app/http/controllers/api/v1"
 	"gohub/app/models/user"
 	"gohub/app/requests"
-	"net/http"
 
+	"github.com/diy0663/go_project_packages/response"
 	"github.com/gin-gonic/gin"
 )
 
@@ -24,7 +24,7 @@ func (sc *SignupController) IsPhoneExist(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{
+	response.JSON(c, gin.H{
 		"exist": user.IsPhoneExist(request.Phone),
 	})
 
