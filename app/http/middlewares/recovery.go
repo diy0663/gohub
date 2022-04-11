@@ -1,12 +1,15 @@
 package middlewares
 
 import (
+	"fmt"
 	"net"
 	"net/http/httputil"
 	"os"
 	"strings"
 	"time"
 
+	"github.com/diy0663/go_project_packages/config"
+	"github.com/diy0663/go_project_packages/email"
 	"github.com/diy0663/go_project_packages/logger"
 	"github.com/diy0663/go_project_packages/response"
 	"github.com/gin-gonic/gin"
@@ -15,6 +18,16 @@ import (
 
 func Recovery() gin.HandlerFunc {
 	return func(c *gin.Context) {
+
+		defaultMailer := email.NewEmail(&email.SMTPInfo{
+			Host:     config.GetString("email.host"),
+			Port:     config.GetInt("email.port"),
+			IsSSL:    false,
+			UserName: config.GetString("email.username"),
+			Password: config.GetString("email.password"),
+			From:     config.GetString("email.from"),
+		})
+
 		defer func() {
 			// 在defer 中捕获panic
 			if err := recover(); err != nil {
@@ -48,10 +61,13 @@ func Recovery() gin.HandlerFunc {
 					zap.Stack("stacktrace"),                    // 调用堆栈信息
 				)
 
+				// 邮件发送报警
+				receiver_emails := strings.Split(config.GetString("email.to"), ",")
+				send_err := defaultMailer.SendMail(receiver_emails, fmt.Sprintf("异常抛出，发生时间: %d", time.Now().Unix()), fmt.Sprintf("错误信息: %v", err))
+				logger.LogIf(send_err)
+
 				// 返回 500 状态码
-
 				response.Abort500(c)
-
 			}
 		}()
 		c.Next()

@@ -3,7 +3,7 @@ module gohub
 go 1.17
 
 require (
-	github.com/diy0663/go_project_packages v0.0.0-20220411114925-070b49e4f50a
+	github.com/diy0663/go_project_packages v1.0.0
 	github.com/gin-gonic/gin v1.7.7
 	github.com/spf13/cast v1.4.1
 	github.com/thedevsaddam/govalidator v1.9.10
@@ -49,6 +49,8 @@ require (
 	golang.org/x/sys v0.0.0-20220405210540-1e041c57c461 // indirect
 	golang.org/x/text v0.3.7 // indirect
 	google.golang.org/protobuf v1.28.0 // indirect
+	gopkg.in/alexcesaro/quotedprintable.v3 v3.0.0-20150716171945-2caba252f4dc // indirect
+	gopkg.in/gomail.v2 v2.0.0-20160411212932-81ebce5c23df // indirect
 	gopkg.in/ini.v1 v1.66.4 // indirect
 	gopkg.in/natefinch/lumberjack.v2 v2.0.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect

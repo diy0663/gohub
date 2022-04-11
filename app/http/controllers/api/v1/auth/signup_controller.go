@@ -14,6 +14,7 @@ type SignupController struct {
 }
 
 func (sc *SignupController) IsPhoneExist(c *gin.Context) {
+	// panic("测试邮件发送")
 
 	request := requests.SignupPhoneExistRequest{}
 
