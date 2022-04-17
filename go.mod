@@ -3,7 +3,7 @@ module gohub
 go 1.17
 
 require (
-	github.com/diy0663/go_project_packages v1.0.0
+	github.com/diy0663/go_project_packages v1.0.1
 	github.com/gin-gonic/gin v1.7.7
 	github.com/spf13/cast v1.4.1
 	github.com/thedevsaddam/govalidator v1.9.10
@@ -44,7 +44,7 @@ require (
 	github.com/ugorji/go/codec v1.2.7 // indirect
 	go.uber.org/atomic v1.7.0 // indirect
 	go.uber.org/multierr v1.6.0 // indirect
-	golang.org/x/crypto v0.0.0-20220331220935-ae2d96664a29 // indirect
+	golang.org/x/crypto v0.0.0-20220411220226-7b82a4e95df4 // indirect
 	golang.org/x/image v0.0.0-20190802002840-cff245a6509b // indirect
 	golang.org/x/sys v0.0.0-20220405210540-1e041c57c461 // indirect
 	golang.org/x/text v0.3.7 // indirect
