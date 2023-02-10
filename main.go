@@ -25,7 +25,7 @@ func main() {
 		} else {
 			c.JSON(http.StatusOK, gin.H{
 				"error_code":    404,
-				"errpr_message": " 路由未定义",
+				"error_message": " 路由未定义",
 			})
 		}
 	})
