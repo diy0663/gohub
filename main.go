@@ -23,6 +23,8 @@ func main() {
 	config.InitConfig(env)
 
 	r := gin.New()
+	// 连接数据库
+	bootstrap.SetupDB()
 	bootstrap.SetupRoute(r)
 	// r.Use(gin.Logger(), gin.Recovery())
 
