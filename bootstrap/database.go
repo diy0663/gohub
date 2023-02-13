@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/diy0663/gohub/app/models/user"
 	"github.com/diy0663/gohub/pkg/config"
 	"github.com/diy0663/gohub/pkg/database"
 	"gorm.io/driver/mysql"
@@ -45,4 +46,9 @@ func SetupDB() {
 	database.SQLDB.SetMaxIdleConns(config.GetInt("database.mysql.max_idle_connections"))
 	// 设置每个链接的过期时间
 	database.SQLDB.SetConnMaxLifetime(time.Duration(config.GetInt("database.mysql.max_life_seconds")) * time.Second)
+
+	//本地开发环境才允许使用数据库自动迁移,生产环境不推荐,因为有风险, 且生成的字段类型取值长度并不准确
+	if config.Get("app.env") == "local" {
+		database.DB.AutoMigrate(&user.User{})
+	}
 }

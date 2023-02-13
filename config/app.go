@@ -7,7 +7,7 @@ func init() {
 		return map[string]interface{}{
 			"name": config.Env("APP_NAME", "Gohub"),
 			// 当前环境，用以区分多环境，一般为 local, stage, production, test
-			"env": config.Env("APP_ENV", "production"),
+			"env": config.Env("APP_ENV", "local"),
 
 			// 是否进入调试模式
 			"debug": config.Env("APP_DEBUG", false),
