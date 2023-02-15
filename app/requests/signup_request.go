@@ -20,15 +20,7 @@ func ValidateSignupPhoneExist(data interface{}, c *gin.Context) map[string][]str
 			"digits:手机号长度必须为 11 位的数字",
 		},
 	}
-	opts := govalidator.Options{
-		Data: data,
-
-		Rules:         rules,
-		Messages:      messages,
-		TagIdentifier: "valid",
-		FormSize:      0,
-	}
-	return govalidator.New(opts).ValidateStruct()
+	return validate(data, rules, messages)
 
 }
 
@@ -54,12 +46,6 @@ func ValidateSignupEmailExist(data interface{}, c *gin.Context) map[string][]str
 			"email:Email 格式不正确，请提供有效的邮箱地址",
 		},
 	}
-	opts := govalidator.Options{
-		Data:          data,
-		Rules:         rules,
-		TagIdentifier: "valid",
-		Messages:      messages,
-	}
-	return govalidator.New(opts).ValidateStruct()
+	return validate(data, rules, messages)
 
 }
