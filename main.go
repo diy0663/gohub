@@ -25,6 +25,8 @@ func main() {
 	// 加载完读取配置之后,优先初始日志
 	bootstrap.SetupLogger()
 
+	gin.SetMode(gin.ReleaseMode)
+
 	r := gin.New()
 	// 连接数据库
 	bootstrap.SetupDB()

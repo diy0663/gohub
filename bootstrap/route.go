@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/diy0663/gohub/app/http/middlewares"
 	"github.com/diy0663/gohub/routes"
 	"github.com/gin-gonic/gin"
 )
@@ -26,7 +27,7 @@ func SetupRoute(router *gin.Engine) {
 // 只在本文件用到, 直接小写字母开头
 func registerGlobalMiddleWare(router *gin.Engine) {
 	router.Use(
-		gin.Logger(),
+		middlewares.Logger(),
 		gin.Recovery(),
 	)
 }
