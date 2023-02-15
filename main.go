@@ -22,6 +22,9 @@ func main() {
 	flag.Parse()
 	config.InitConfig(env)
 
+	// 加载完读取配置之后,优先初始日志
+	bootstrap.SetupLogger()
+
 	r := gin.New()
 	// 连接数据库
 	bootstrap.SetupDB()
