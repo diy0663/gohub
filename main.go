@@ -25,6 +25,8 @@ func main() {
 	// 加载完读取配置之后,优先初始日志
 	bootstrap.SetupLogger()
 
+	// 设置 gin 的运行模式，支持 debug, release, test
+	// release 会屏蔽调试信息，官方建议生产环境中使用
 	gin.SetMode(gin.ReleaseMode)
 
 	r := gin.New()

@@ -15,6 +15,7 @@ type SignupController struct {
 
 func (sc *SignupController) IsPhoneExists(c *gin.Context) {
 
+	//panic("故意出错")
 	request := requests.SignupPhoneExistRequest{}
 
 	if ok := requests.Validate(c, &request, requests.ValidateSignupPhoneExist); !ok {
