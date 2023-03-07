@@ -8,10 +8,10 @@ import (
 	"github.com/diy0663/gohub/app/models/user"
 	"github.com/diy0663/gohub/pkg/config"
 	"github.com/diy0663/gohub/pkg/database"
+	"github.com/diy0663/gohub/pkg/logger"
 	"gorm.io/driver/mysql"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
-	"gorm.io/gorm/logger"
 )
 
 func SetupDB() {
@@ -37,8 +37,10 @@ func SetupDB() {
 	default:
 		panic(errors.New("database of " + config.Get("database.connection") + " connection is  not supported"))
 	}
-	// 传入配置即可用gorm的方式去开启连接
-	database.Connect(dbConfig, logger.Default.LogMode(logger.Info))
+	// 传入配置即可用gorm的方式去开启连接,第二个参数是logger ,可以用gorm自带的logger, 也可以再封装一个基于zap的专用数据库logger,要注意实现 Interface 这个接口
+
+	//database.Connect(dbConfig, logger.Default.LogMode(logger.Info))
+	database.Connect(dbConfig, logger.NewGormLogger())
 
 	// 设置最大连接数
 	database.SQLDB.SetMaxOpenConns(config.GetInt("database.mysql.max_open_connections"))
