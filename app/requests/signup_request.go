@@ -6,6 +6,7 @@ import (
 )
 
 type SignupPhoneExistRequest struct {
+	// omitempty 不存在的时候就不输出
 	Phone string `json:"phone,omitempty" valid:"phone"` //  valid 对应 TagIdentifier ,表明出现关键字 valid 就验证,验证规则就是 valid 后面跟着的规则
 }
 

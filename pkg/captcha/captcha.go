@@ -5,6 +5,7 @@ import (
 
 	"github.com/diy0663/gohub/pkg/app"
 	"github.com/diy0663/gohub/pkg/config"
+	"github.com/diy0663/gohub/pkg/logger"
 	"github.com/diy0663/gohub/pkg/redis"
 	"github.com/mojocn/base64Captcha"
 )
@@ -50,8 +51,9 @@ func (c *Captcha) Generate() (id, b64s string, err error) {
 // You may want to call `store.Verify` method instead.
 func (c *Captcha) Verify(id, answer string, clear bool) (match bool) {
 
+	logger.DebugString("验证对比", id, config.GetString("captcha.testing_key"))
 	// 方便本地和 API 自动测试  , 传特定验证key 过来的直接允许跳过验证码验证
-	if !app.IsProduction() && id == config.GetString("captcha.testing_key") && id != "" {
+	if !app.IsProduction() && id == config.GetString("captcha.testing_key") {
 		return true
 	}
 
