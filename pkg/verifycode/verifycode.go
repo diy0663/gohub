@@ -1,6 +1,7 @@
 package verifycode
 
 import (
+	"fmt"
 	"strings"
 	"sync"
 
@@ -8,6 +9,7 @@ import (
 	"github.com/diy0663/gohub/pkg/config"
 	"github.com/diy0663/gohub/pkg/helper"
 	"github.com/diy0663/gohub/pkg/logger"
+	"github.com/diy0663/gohub/pkg/mail"
 	"github.com/diy0663/gohub/pkg/redis"
 	"github.com/diy0663/gohub/pkg/sms"
 )
@@ -62,6 +64,32 @@ func (vc *VerifyCode) CheckAnswer(key string, answer string) bool {
 		return true
 	}
 	return vc.Store.Verify(key, answer, false)
+
+}
+
+func (vc *VerifyCode) SendEmail(email string) bool {
+	// 生成数字验证码(生成的同时存入redis中)
+	code := vc.generateVerifyCode(email)
+
+	// 本地测试不需要真实发出
+	// if !app.IsProduction() && strings.HasSuffix(email, config.GetString("verifycode.debug_email_suffix")) {
+	// 	return true
+	// }
+	content := fmt.Sprintf("<h1>您的 Email 验证码是 %v </h1>", code)
+
+	return mail.NewMail().Send(mail.Email{
+		From: mail.From{
+			Address: config.GetString("mail.from.address"),
+			Name:    config.GetString("mail.from.name"),
+		},
+		To:      []string{email},
+		Bcc:     []string{},
+		Cc:      []string{},
+		Subject: "Email 验证码",
+		Text:    []byte{},
+		// 强制类型转换, string 转 []byte
+		HTML: []byte(content),
+	})
 
 }
 

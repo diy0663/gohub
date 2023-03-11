@@ -41,3 +41,16 @@ func (vc VerifyCodeController) SendUsingPhone(c *gin.Context) {
 
 // 用于检查验证码是否正确的方法
 // captcha.NewCaptcha().VerifyCaptcha()
+
+func (vc VerifyCodeController) SendUsingEmail(c *gin.Context) {
+	// 验证参数 (表单验证), 验证的时候也处理 验证 captcha_id 跟传来的图片数字是否经过redis 验证
+	request := requests.VerifyCodeEmailRequest{}
+	if ok := requests.Validate(c, &request, requests.VerifyCodeEmail); !ok {
+		return
+	}
+	//  触发短信
+	if ok := verifycode.NewVerifyCode().SendEmail(request.Email); !ok {
+		response.Abort500(c, "发送Email 验证码失败")
+	}
+	response.Success(c)
+}

@@ -21,7 +21,7 @@ type Email struct {
 	// 接收可以是多个邮箱
 	To      []string
 	Bcc     []string // ?
-	Cc      []string // ?
+	Cc      []string // ? 抄送者?
 	Subject string
 	Text    []byte // 需要大量字符串处理的时候用[]byte，性能好很多,切片的结构和字符串类似，只是解除了只读限制
 	HTML    []byte
