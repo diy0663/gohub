@@ -6,6 +6,7 @@ import (
 	v1 "github.com/diy0663/gohub/app/http/controllers/api/v1"
 	"github.com/diy0663/gohub/app/models/user"
 	"github.com/diy0663/gohub/app/requests"
+	"github.com/diy0663/gohub/pkg/response"
 	"github.com/gin-gonic/gin"
 )
 
@@ -41,5 +42,29 @@ func (sc *SignupController) IsEmailExists(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"exist": user.IsEmailExists(request.Email),
 	})
+
+}
+func (sc *SignupController) SignupUsingPhone(c *gin.Context) {
+
+	// 1. 验证表单
+	request := requests.SignupUsingPhoneRequest{}
+	ok := requests.Validate(c, &request, requests.SignupUsingPhone)
+	if !ok {
+		return
+	}
+	_user := user.User{
+
+		Name:     request.Name,
+		Phone:    request.Phone,
+		Password: request.Password,
+	}
+	_user.Create()
+	if _user.ID > 0 {
+		response.CreatedJSON(c, gin.H{
+			"data": _user,
+		})
+	} else {
+		response.Abort500(c, "创建用户失败，请稍后尝试")
+	}
 
 }

@@ -24,6 +24,9 @@ func RegisterAPIRoutes(r *gin.Engine) {
 			authGroup.POST("/signup/phone/exist", signup_controller.IsPhoneExists)
 			authGroup.POST("/signup/email/exist", signup_controller.IsEmailExists)
 
+			// 传入账号密码手机验证码 通过手机号完成注册
+			authGroup.POST("/signup/using-phone", signup_controller.SignupUsingPhone)
+
 			verify_code_controller := new(auth.VerifyCodeController)
 			// 生成图片验证码
 			authGroup.POST("/verify-codes/captcha", verify_code_controller.ShowCaptcha)
@@ -31,6 +34,7 @@ func RegisterAPIRoutes(r *gin.Engine) {
 			authGroup.POST("/verify-codes/phone", verify_code_controller.SendUsingPhone)
 			// 发邮件验证码
 			authGroup.POST("/verify-codes/email", verify_code_controller.SendUsingEmail)
+
 		}
 
 	}
