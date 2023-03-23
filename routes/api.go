@@ -26,6 +26,8 @@ func RegisterAPIRoutes(r *gin.Engine) {
 
 			// 传入账号密码手机验证码 通过手机号完成注册
 			authGroup.POST("/signup/using-phone", signup_controller.SignupUsingPhone)
+			// 根据邮件创建用户
+			authGroup.POST("/signup/using-email", signup_controller.SignupUsingEmail)
 
 			verify_code_controller := new(auth.VerifyCodeController)
 			// 生成图片验证码

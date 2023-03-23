@@ -21,7 +21,7 @@ func init() {
 			// 测试手机号前缀
 			"debug_phone_prefix": "0000",
 			//
-			"debug_email_suffix": "1@testing.com",
+			"debug_email_suffix": "@testing.com",
 		}
 	})
 }
