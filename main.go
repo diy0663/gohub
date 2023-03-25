@@ -36,6 +36,7 @@ func main() {
 	bootstrap.SetupRoute(r)
 	// mac M1环境下 用 127.0.0.1:3000 就不会频繁提示防火墙了
 	err := r.Run(config.Get("app.mac_m1") + ":" + config.Get("app.port"))
+
 	if err != nil {
 		fmt.Println(err.Error())
 	}

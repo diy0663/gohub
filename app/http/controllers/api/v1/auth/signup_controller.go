@@ -6,6 +6,7 @@ import (
 	v1 "github.com/diy0663/gohub/app/http/controllers/api/v1"
 	"github.com/diy0663/gohub/app/models/user"
 	"github.com/diy0663/gohub/app/requests"
+	"github.com/diy0663/gohub/pkg/jwt"
 	"github.com/diy0663/gohub/pkg/response"
 	"github.com/gin-gonic/gin"
 )
@@ -60,8 +61,13 @@ func (sc *SignupController) SignupUsingPhone(c *gin.Context) {
 	}
 	_user.Create()
 	if _user.ID > 0 {
+		// 注册成功之后生成token 返回
+		// todo
+		token := jwt.NewJWt().IssueToken(_user.GetStringId(), _user.Name)
+		// 这里哪怕生成的token是空串也暂时不管了
 		response.CreatedJSON(c, gin.H{
-			"data": _user,
+			"data":  _user,
+			"token": token,
 		})
 	} else {
 		response.Abort500(c, "创建用户失败，请稍后尝试")
