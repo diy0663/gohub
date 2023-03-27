@@ -152,3 +152,32 @@ func (jwt *JWT) parseTokenString(tokenString string) (*jwtpkg.Token, error) {
 		return jwt.SignKey, nil
 	})
 }
+
+// 中间件使用 从 gin.Context 里面解析token
+func (jwt *JWT) ParserToken(c *gin.Context) (*JWTCustomClaims, error) {
+	tokenString, err := jwt.getTokenFromHeader(c)
+	if err != nil {
+		return nil, err
+	}
+
+	// 解析token串
+	token, err := jwt.parseTokenString(tokenString)
+	if err != nil {
+		// 细化各种报错
+		validationErr, ok := err.(*jwtpkg.ValidationError)
+		if ok {
+			if validationErr.Errors == jwtpkg.ValidationErrorMalformed {
+				return nil, ErrTokenMalformed
+			} else if validationErr.Errors == jwtpkg.ValidationErrorExpired {
+				return nil, ErrTokenExpired
+			}
+		}
+		return nil, ErrTokenInvalid
+	}
+	// token 中的 claims 信息解析出来和 JWTCustomClaims 数据结构进行校验
+	if claims, ok := token.Claims.(*JWTCustomClaims); ok && token.Valid {
+		return claims, nil
+	}
+	return nil, ErrTokenInvalid
+
+}

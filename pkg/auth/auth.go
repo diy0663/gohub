@@ -4,6 +4,8 @@ import (
 	"errors"
 
 	"github.com/diy0663/gohub/app/models/user"
+	"github.com/diy0663/gohub/pkg/logger"
+	"github.com/gin-gonic/gin"
 )
 
 // 登录,授权验证登, 基于userModel 做的处理,不具备通用性,其实不应该放pkg模块
@@ -26,4 +28,17 @@ func LoginByPhone(phone string) (user.User, error) {
 		return user.User{}, errors.New("手机号未注册")
 	}
 	return userModel, nil
+}
+
+func CurrentUser(c *gin.Context) user.User {
+	userModel, ok := c.MustGet("current_user").(user.User)
+	if !ok {
+		logger.LogIf(errors.New("无法获取用户"))
+		return user.User{}
+	}
+	return userModel
+}
+
+func CurrentUID(c *gin.Context) string {
+	return c.GetString("current_user_id")
 }

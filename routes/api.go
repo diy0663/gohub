@@ -4,6 +4,9 @@ import (
 	"net/http"
 
 	"github.com/diy0663/gohub/app/http/controllers/api/v1/auth"
+	"github.com/diy0663/gohub/app/http/middlewares"
+	auth_jwt "github.com/diy0663/gohub/pkg/auth"
+	"github.com/diy0663/gohub/pkg/response"
 	"github.com/gin-gonic/gin"
 )
 
@@ -44,6 +47,10 @@ func RegisterAPIRoutes(r *gin.Engine) {
 			authGroup.POST("/verify-codes/email", verify_code_controller.SendUsingEmail)
 
 		}
+		v1.GET("/test_auth", middlewares.AuthJWT(), func(c *gin.Context) {
+			userModel := auth_jwt.CurrentUser(c)
+			response.Data(c, userModel)
+		})
 
 	}
 }

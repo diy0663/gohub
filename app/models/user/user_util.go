@@ -25,4 +25,10 @@ func GetByMulti(loginId string) (userModel User) {
 func GetByPone(phone string) (userModel User) {
 	database.DB.Where("phone = ? ", phone).First(&userModel)
 	return userModel
+
+}
+
+func Get(id string) (userModel User) {
+	database.DB.Where("id = ? ", id).First(&userModel)
+	return userModel
 }
