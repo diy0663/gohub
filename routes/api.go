@@ -32,6 +32,7 @@ func RegisterAPIRoutes(r *gin.Engine) {
 			// 手机号+短信验证码进行验证  ,前提是要触发一次发送短信的操作
 			login_controller := new(auth.LoginController)
 			authGroup.POST("/login/using-phone", login_controller.LoginByPhone)
+			authGroup.POST("/login/using-password", login_controller.LoginByPassword)
 
 			verify_code_controller := new(auth.VerifyCodeController)
 			// 生成图片验证码

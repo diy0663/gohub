@@ -1,7 +1,7 @@
 {
     "client": "Thunder Client",
     "collectionName": "gohub",
-    "dateExported": "2023-03-27T02:10:13.443Z",
+    "dateExported": "2023-03-27T03:07:56.685Z",
     "version": "1.1",
     "folders": [
         {
@@ -107,12 +107,31 @@
             "method": "POST",
             "sortNum": 46250,
             "created": "2023-03-25T09:19:07.244Z",
-            "modified": "2023-03-25T09:19:34.356Z",
+            "modified": "2023-03-27T03:07:10.375Z",
             "headers": [],
             "params": [],
             "body": {
                 "type": "json",
-                "raw": "{\n\n    \"verify_code\": \"123456\",\n    \"phone\": \"00001100140\"\n}",
+                "raw": "{\n    \"verify_code\": \"123456\",\n    \"phone\": \"00001100140\"\n}",
+                "form": []
+            },
+            "tests": []
+        },
+        {
+            "_id": "faff26d1-8627-488f-8fb0-9fe8bed3fb14",
+            "colId": "8c68507d-1231-42e7-86ab-5138c9d7af21",
+            "containerId": "90c7b1dd-e41d-4db5-9675-000003172878",
+            "name": "login_using_password",
+            "url": "127.0.0.1:3000/v1/auth/login/using-password",
+            "method": "POST",
+            "sortNum": 46875,
+            "created": "2023-03-27T02:50:20.743Z",
+            "modified": "2023-03-27T03:07:40.120Z",
+            "headers": [],
+            "params": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n    \"login_id\": \"{{phone}}\",\n    \"password\": \"{{password}}\",\n    \"captcha_id\":\"{{captcha_id}}\",\n    \"captcha_answer\":\"{{captcha_answer}}\"\n}",
                 "form": []
             },
             "tests": []
