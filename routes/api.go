@@ -33,6 +33,7 @@ func RegisterAPIRoutes(r *gin.Engine) {
 			login_controller := new(auth.LoginController)
 			authGroup.POST("/login/using-phone", login_controller.LoginByPhone)
 			authGroup.POST("/login/using-password", login_controller.LoginByPassword)
+			authGroup.POST("/login/refresh-token", login_controller.RefreshToken)
 
 			verify_code_controller := new(auth.VerifyCodeController)
 			// 生成图片验证码

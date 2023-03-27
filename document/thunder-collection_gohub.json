@@ -1,7 +1,7 @@
 {
     "client": "Thunder Client",
     "collectionName": "gohub",
-    "dateExported": "2023-03-27T03:07:56.685Z",
+    "dateExported": "2023-03-27T07:54:46.138Z",
     "version": "1.1",
     "folders": [
         {
@@ -114,6 +114,24 @@
                 "type": "json",
                 "raw": "{\n    \"verify_code\": \"123456\",\n    \"phone\": \"00001100140\"\n}",
                 "form": []
+            },
+            "tests": []
+        },
+        {
+            "_id": "1869d712-55cf-45d8-b398-c90e1d3baac8",
+            "colId": "8c68507d-1231-42e7-86ab-5138c9d7af21",
+            "containerId": "90c7b1dd-e41d-4db5-9675-000003172878",
+            "name": "refresh_token",
+            "url": "127.0.0.1:3000/v1/auth/login/refresh-token",
+            "method": "POST",
+            "sortNum": 46562.5,
+            "created": "2023-03-27T07:23:52.130Z",
+            "modified": "2023-03-27T07:53:37.727Z",
+            "headers": [],
+            "params": [],
+            "auth": {
+                "type": "bearer",
+                "bearer": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODUwODc1NDgsImlhdCI6MTY3OTkwMzYwOCwiaXNzIjoiR29odWIiLCJuYmYiOjE2Nzk5MDM2MDgsInVzZXJfaWQiOiI3IiwidXNlcl9uYW1lIjoidGVzdGUyMnIiLCJleHBpcmVfdGltZSI6MTY4NTA4NzU0OH0.akjoWbYEXHzHPqUgs55M03UxieI-VsxeCbO9jqzmE4k"
             },
             "tests": []
         },

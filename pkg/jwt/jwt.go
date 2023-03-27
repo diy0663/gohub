@@ -2,11 +2,13 @@ package jwt
 
 import (
 	"errors"
+	"strings"
 	"time"
 
 	"github.com/diy0663/gohub/pkg/app"
 	"github.com/diy0663/gohub/pkg/config"
 	"github.com/diy0663/gohub/pkg/logger"
+	"github.com/gin-gonic/gin"
 	jwtpkg "github.com/golang-jwt/jwt"
 )
 
@@ -42,7 +44,7 @@ type JWT struct {
 func NewJWt() *JWT {
 	return &JWT{
 		SignKey:    []byte(config.GetString("app.key")),
-		MaxRefresh: time.Duration(config.GetInt64("wt.max_refresh_minute")) * time.Minute,
+		MaxRefresh: time.Duration(config.GetInt64("jwt.max_refresh_minute")) * time.Minute,
 	}
 }
 
@@ -97,4 +99,56 @@ func (jwt *JWT) expireAtTime() int64 {
 func (jwt *JWT) createToken(claims JWTCustomClaims) (string, error) {
 	token := jwtpkg.NewWithClaims(jwtpkg.SigningMethodHS256, claims)
 	return token.SignedString(jwt.SignKey)
+}
+
+//  根据旧token 刷新得到新token ,约定了token 都是放到header里面去获取
+
+func (jwt *JWT) RefreshToken(c *gin.Context) (string, error) {
+	tokenString, err := jwt.getTokenFromHeader(c)
+	if err != nil {
+		return "", err
+	}
+
+	// 解析这个token ,确保这个token不是伪造的,解析出来的也可能是过期的
+	token, err := jwt.parseTokenString(tokenString)
+	if err != nil {
+		// 假如这个报错, 不是过期的那种错误, 就不再往下走了
+		validationErr, ok := err.(*jwtpkg.ValidationError)
+		if !ok || validationErr.Errors != jwtpkg.ValidationErrorExpired {
+			return "", err
+		}
+	}
+	// 解析出 claims 数据, 从里面获取过期时间等来判断是否可以继续刷新延期
+	claim := token.Claims.(*JWTCustomClaims)
+	// 当时的签发生效日期+最大的允许刷新时间 < 当前时间, 就说明已经错过允许刷新的时间点了, 不能再帮忙延长了
+	if claim.IssuedAt < app.TimenowInTimezone().Add(-jwt.MaxRefresh).Unix() {
+		return "", ErrTokenExpiredMaxRefresh
+	}
+	claim.StandardClaims.ExpiresAt = jwt.expireAtTime()
+	claim.ExpireAtTime = jwt.expireAtTime()
+	return jwt.createToken(*claim)
+
+}
+
+//	约定token 放header
+//
+// 格式: Authorization:Bearer xxxxx
+func (jwt *JWT) getTokenFromHeader(c *gin.Context) (string, error) {
+	authHeader := c.Request.Header.Get("Authorization")
+	if authHeader == "" {
+		return "", ErrHeaderEmpty
+	}
+	parts := strings.SplitN(authHeader, " ", 2)
+	if len(parts) == 2 && parts[0] == "Bearer" {
+		return parts[1], nil
+	} else {
+		return "", ErrHeaderMalformed
+	}
+}
+
+func (jwt *JWT) parseTokenString(tokenString string) (*jwtpkg.Token, error) {
+	// 第三个匿名函数里面的 return jwt.SignKey, nil 是咋回事 ?
+	return jwtpkg.ParseWithClaims(tokenString, &JWTCustomClaims{}, func(token *jwtpkg.Token) (interface{}, error) {
+		return jwt.SignKey, nil
+	})
 }
