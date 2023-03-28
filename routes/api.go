@@ -46,6 +46,9 @@ func RegisterAPIRoutes(r *gin.Engine) {
 			// 发邮件验证码
 			authGroup.POST("/verify-codes/email", verify_code_controller.SendUsingEmail)
 
+			password_reset_controller := new(auth.PasswordResetController)
+			authGroup.POST("/password-reset/using-phone", password_reset_controller.ResetByPhone)
+
 		}
 		v1.GET("/test_auth", middlewares.AuthJWT(), func(c *gin.Context) {
 			userModel := auth_jwt.CurrentUser(c)

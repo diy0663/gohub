@@ -12,3 +12,10 @@ func (userModel *User) Create() {
 func (userModel *User) ComparePassword(_password string) bool {
 	return hash.BcryptCheck(_password, userModel.Password)
 }
+
+func (userModel *User) Save() (rowAffected int64) {
+	// todo 这里为啥要传  &userModel ??
+	result := database.DB.Save(&userModel)
+	// 返回影响行数
+	return result.RowsAffected
+}
