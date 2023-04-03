@@ -1,14 +1,16 @@
 package main
 
 import (
-	"flag"
 	"fmt"
+	"os"
 
+	"github.com/diy0663/gohub/app/cmd"
 	"github.com/diy0663/gohub/bootstrap"
+	"github.com/spf13/cobra"
 
 	btsConfig "github.com/diy0663/gohub/config"
 	"github.com/diy0663/gohub/pkg/config"
-	"github.com/gin-gonic/gin"
+	"github.com/diy0663/gohub/pkg/console"
 )
 
 func init() {
@@ -17,27 +19,41 @@ func init() {
 
 func main() {
 
-	var env string
-	flag.StringVar(&env, "env", "", "加载 指定.env 文件, 例如 --env=testing 对应 .env.testing , 不传则默认.env 文件")
-	flag.Parse()
-	config.InitConfig(env)
+	//Cobra 的所有命令都基于 root 命令，相当于整个程序的入口，我们将其放置于 main.go 中
+	var rootCmd = &cobra.Command{
+		// 把这个设置为主命令
+		Use:   "Gohub",
+		Short: " Gohub 命令行应用",
+		// 详细介绍
+		Long: ` you can use "-h" flag to see all subcommands`,
+		// rootCmd 的所有子命令 执行之前,都会执行以下代码
+		PersistentPreRun: func(command *cobra.Command, args []string) {
+			// --env 的值 读取环境变量,才能知道用哪个配置文件作为配置
 
-	// 加载完读取配置之后,优先初始日志
-	bootstrap.SetupLogger()
+			config.InitConfig(cmd.Env)
+			bootstrap.SetupLogger()
 
-	// 设置 gin 的运行模式，支持 debug, release, test
-	// release 会屏蔽调试信息，官方建议生产环境中使用
-	gin.SetMode(gin.ReleaseMode)
+			// 设置 gin 的运行模式，支持 debug, release, test
+			// release 会屏蔽调试信息，官方建议生产环境中使用
 
-	r := gin.New()
-	// 连接数据库
-	bootstrap.SetupDB()
-	bootstrap.SetupRedis()
-	bootstrap.SetupRoute(r)
-	// mac M1环境下 用 127.0.0.1:3000 就不会频繁提示防火墙了
-	err := r.Run(config.Get("app.mac_m1") + ":" + config.Get("app.port"))
-
-	if err != nil {
-		fmt.Println(err.Error())
+			// 连接数据库
+			bootstrap.SetupDB()
+			bootstrap.SetupRedis()
+		},
 	}
+
+	// 注册子命令
+	rootCmd.AddCommand(
+		cmd.CmdServe,
+	)
+
+	// 设置默认运行的命令 (这里设置为启动web服务 CmdServe )
+	// 这里  RegisterDefaultCmd 感觉没啥卵用... 还是要用go run main.go serve   或者 air serve  去启动
+	cmd.RegisterDefaultCmd(rootCmd, cmd.CmdServe)
+	// 注册全局参数 --env
+	cmd.RegisterGlobalFlags(rootCmd)
+	if err := rootCmd.Execute(); err != nil {
+		console.Exit(fmt.Sprintf("Failed to run app with %v: %s", os.Args, err.Error()))
+	}
+
 }
