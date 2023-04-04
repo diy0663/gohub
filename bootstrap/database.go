@@ -42,6 +42,8 @@ func SetupDB() {
 	//database.Connect(dbConfig, logger.Default.LogMode(logger.Info))
 	database.Connect(dbConfig, logger.NewGormLogger())
 
+	//todo 如何判断数据库连接是否真的成功
+
 	// 设置最大连接数
 	database.SQLDB.SetMaxOpenConns(config.GetInt("database.mysql.max_open_connections"))
 	// 设置最大空闲连接数
