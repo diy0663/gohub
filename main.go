@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/diy0663/gohub/app/cmd"
+	"github.com/diy0663/gohub/app/cmd/make"
 	"github.com/diy0663/gohub/bootstrap"
 	"github.com/spf13/cobra"
 
@@ -45,6 +46,7 @@ func main() {
 	// 注册子命令
 	rootCmd.AddCommand(
 		cmd.CmdServe,
+		make.CmdMake,
 	)
 
 	// 设置默认运行的命令 (这里设置为启动web服务 CmdServe )
