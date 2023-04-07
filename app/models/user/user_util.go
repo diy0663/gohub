@@ -30,6 +30,7 @@ func GetByPone(phone string) (userModel User) {
 
 }
 
+// GORM 使用结构体名的 蛇形复数 作为表名  下面的结构体 User 默认对应数据表 users
 func Get(id string) (userModel User) {
 	database.DB.Where("id = ? ", id).First(&userModel)
 	return userModel
