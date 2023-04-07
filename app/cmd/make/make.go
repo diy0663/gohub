@@ -37,6 +37,7 @@ func init() {
 		//  自动生成代码类型 cmd ,request ,controller, model 等, 都是 归属 CmdMake 的子命令
 		CmdMakeCMD,
 		CmdMakeModel,
+		CmdMakeAPIController,
 	)
 }
 
