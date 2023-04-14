@@ -2,7 +2,7 @@ package {{API_VERSION}}
 
 
 type {{StructNamePlural}}Controller struct {
-    BaseAPIController
+    BaseApiController
 }
 
 func (ctrl *{{StructNamePlural}}Controller) Index(c *gin.Context) {
