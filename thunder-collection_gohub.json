@@ -1,0 +1,287 @@
+{
+    "client": "Thunder Client",
+    "collectionName": "gohub",
+    "dateExported": "2023-04-14T08:59:12.772Z",
+    "version": "1.1",
+    "folders": [
+        {
+            "_id": "90c7b1dd-e41d-4db5-9675-000003172878",
+            "name": "v1",
+            "containerId": "",
+            "created": "2023-02-13T08:15:12.094Z",
+            "sortNum": 10000
+        }
+    ],
+    "requests": [
+        {
+            "_id": "ecd06e4d-c4bd-409c-81d9-e391470812f6",
+            "colId": "8c68507d-1231-42e7-86ab-5138c9d7af21",
+            "containerId": "",
+            "name": "test_404",
+            "url": "http://127.0.0.1:3000/1",
+            "method": "GET",
+            "sortNum": 10000,
+            "created": "2023-02-10T09:07:08.299Z",
+            "modified": "2023-02-10T09:46:10.581Z",
+            "headers": [],
+            "params": [],
+            "tests": []
+        },
+        {
+            "_id": "24e133af-16b4-4866-8c42-4960c0a316a8",
+            "colId": "8c68507d-1231-42e7-86ab-5138c9d7af21",
+            "containerId": "90c7b1dd-e41d-4db5-9675-000003172878",
+            "name": "v1_root",
+            "url": "127.0.0.1:3000/v1",
+            "method": "GET",
+            "sortNum": 15000,
+            "created": "2023-02-10T09:47:00.304Z",
+            "modified": "2023-02-13T08:21:09.394Z",
+            "headers": [],
+            "params": [],
+            "tests": []
+        },
+        {
+            "_id": "7c119020-0f22-4e16-bf09-adc497b7c273",
+            "colId": "8c68507d-1231-42e7-86ab-5138c9d7af21",
+            "containerId": "90c7b1dd-e41d-4db5-9675-000003172878",
+            "name": "v1_test_auth",
+            "url": "127.0.0.1:3000/v1/test_auth",
+            "method": "GET",
+            "sortNum": 22500,
+            "created": "2023-03-27T09:18:10.431Z",
+            "modified": "2023-03-27T09:28:00.799Z",
+            "headers": [],
+            "params": [],
+            "auth": {
+                "type": "bearer",
+                "bearer": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODUwOTI5NjEsImlhdCI6MTY3OTkwMzYwOCwiaXNzIjoiR29odWIiLCJuYmYiOjE2Nzk5MDM2MDgsInVzZXJfaWQiOiI3IiwidXNlcl9uYW1lIjoidGVzdGUyMnIiLCJleHBpcmVfdGltZSI6MTY4NTA5Mjk2MX0.j5VhB36lzHVBy7emgMwae-4QisPry7zVnnsyCv9QrRg"
+            },
+            "tests": []
+        },
+        {
+            "_id": "6ec07708-3f0d-4f7d-bc8c-dc9f84484d24",
+            "colId": "8c68507d-1231-42e7-86ab-5138c9d7af21",
+            "containerId": "90c7b1dd-e41d-4db5-9675-000003172878",
+            "name": "sign_up_exists_phone",
+            "url": "127.0.0.1:3000/v1/auth/signup/phone/exist",
+            "method": "POST",
+            "sortNum": 30000,
+            "created": "2023-02-13T08:15:30.643Z",
+            "modified": "2023-03-08T10:09:25.056Z",
+            "headers": [],
+            "params": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"phone\":\"18000000001\"\n}",
+                "form": []
+            },
+            "tests": []
+        },
+        {
+            "_id": "d5958670-307a-4ce8-9f80-3e7c47e40f08",
+            "colId": "8c68507d-1231-42e7-86ab-5138c9d7af21",
+            "containerId": "90c7b1dd-e41d-4db5-9675-000003172878",
+            "name": "sign_up_exists_email",
+            "url": "127.0.0.1:{{port}}/v1/auth/signup/email/exist",
+            "method": "POST",
+            "sortNum": 40000,
+            "created": "2023-02-15T07:16:29.868Z",
+            "modified": "2023-03-27T02:09:08.769Z",
+            "headers": [],
+            "params": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"email\":\"123@qq.com\"\n}",
+                "form": []
+            },
+            "tests": []
+        },
+        {
+            "_id": "eccb9ec1-eaf1-4e23-9a78-8668aa26dea8",
+            "colId": "8c68507d-1231-42e7-86ab-5138c9d7af21",
+            "containerId": "90c7b1dd-e41d-4db5-9675-000003172878",
+            "name": "sign_up_using_phone",
+            "url": "127.0.0.1:3000/v1/auth/signup/using-phone",
+            "method": "POST",
+            "sortNum": 45000,
+            "created": "2023-03-22T08:59:10.171Z",
+            "modified": "2023-03-25T07:41:29.644Z",
+            "headers": [],
+            "params": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n    \"name\":\"teste22r\",\n    \"password\":\"secret\",\n    \"password_confirm\":\"secret\",\n    \"verify_code\": \"123456\",\n    \"phone\": \"00001100140\"\n}",
+                "form": []
+            },
+            "tests": []
+        },
+        {
+            "_id": "801f97a6-efde-4660-9b80-b9bd4b60bec0",
+            "colId": "8c68507d-1231-42e7-86ab-5138c9d7af21",
+            "containerId": "90c7b1dd-e41d-4db5-9675-000003172878",
+            "name": "login_using_phone",
+            "url": "127.0.0.1:3000/v1/auth/login/using-phone",
+            "method": "POST",
+            "sortNum": 46250,
+            "created": "2023-03-25T09:19:07.244Z",
+            "modified": "2023-03-27T03:07:10.375Z",
+            "headers": [],
+            "params": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n    \"verify_code\": \"123456\",\n    \"phone\": \"00001100140\"\n}",
+                "form": []
+            },
+            "tests": []
+        },
+        {
+            "_id": "1869d712-55cf-45d8-b398-c90e1d3baac8",
+            "colId": "8c68507d-1231-42e7-86ab-5138c9d7af21",
+            "containerId": "90c7b1dd-e41d-4db5-9675-000003172878",
+            "name": "refresh_token",
+            "url": "127.0.0.1:3000/v1/auth/login/refresh-token",
+            "method": "POST",
+            "sortNum": 46562.5,
+            "created": "2023-03-27T07:23:52.130Z",
+            "modified": "2023-03-27T07:53:37.727Z",
+            "headers": [],
+            "params": [],
+            "auth": {
+                "type": "bearer",
+                "bearer": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODUwODc1NDgsImlhdCI6MTY3OTkwMzYwOCwiaXNzIjoiR29odWIiLCJuYmYiOjE2Nzk5MDM2MDgsInVzZXJfaWQiOiI3IiwidXNlcl9uYW1lIjoidGVzdGUyMnIiLCJleHBpcmVfdGltZSI6MTY4NTA4NzU0OH0.akjoWbYEXHzHPqUgs55M03UxieI-VsxeCbO9jqzmE4k"
+            },
+            "tests": []
+        },
+        {
+            "_id": "faff26d1-8627-488f-8fb0-9fe8bed3fb14",
+            "colId": "8c68507d-1231-42e7-86ab-5138c9d7af21",
+            "containerId": "90c7b1dd-e41d-4db5-9675-000003172878",
+            "name": "login_using_password",
+            "url": "127.0.0.1:3000/v1/auth/login/using-password",
+            "method": "POST",
+            "sortNum": 46875,
+            "created": "2023-03-27T02:50:20.743Z",
+            "modified": "2023-03-27T03:07:40.120Z",
+            "headers": [],
+            "params": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n    \"login_id\": \"{{phone}}\",\n    \"password\": \"{{password}}\",\n    \"captcha_id\":\"{{captcha_id}}\",\n    \"captcha_answer\":\"{{captcha_answer}}\"\n}",
+                "form": []
+            },
+            "tests": []
+        },
+        {
+            "_id": "77b54a20-90a2-4201-a4be-ffb76568aaee",
+            "colId": "8c68507d-1231-42e7-86ab-5138c9d7af21",
+            "containerId": "90c7b1dd-e41d-4db5-9675-000003172878",
+            "name": "reset_password_by_phone",
+            "url": "127.0.0.1:3000/v1/auth/password-reset/using-phone",
+            "method": "POST",
+            "sortNum": 47187.5,
+            "created": "2023-03-28T03:19:00.833Z",
+            "modified": "2023-03-28T03:21:06.500Z",
+            "headers": [],
+            "params": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n    \"phone\":\"00001100141\",\n    \"password\": \"888888\",\n    \"verify_code\": \"123456\"\n}",
+                "form": []
+            },
+            "tests": []
+        },
+        {
+            "_id": "b43e3a51-e79a-42d0-8694-49444267d6a9",
+            "colId": "8c68507d-1231-42e7-86ab-5138c9d7af21",
+            "containerId": "90c7b1dd-e41d-4db5-9675-000003172878",
+            "name": "sign_up_using_email",
+            "url": "127.0.0.1:3000/v1/auth/signup/using-email",
+            "method": "POST",
+            "sortNum": 47500,
+            "created": "2023-03-23T09:34:46.967Z",
+            "modified": "2023-03-23T10:21:12.564Z",
+            "headers": [],
+            "params": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n    \"name\":\"teste211r\",\n    \"password\":\"secret\",\n    \"password_confirm\":\"secret\",\n    \"verify_code\": \"123456\",\n    \"email\": \"000201@testing.com\"\n}",
+                "form": []
+            },
+            "tests": []
+        },
+        {
+            "_id": "bfcd3d9e-90fb-4155-85db-10fee4d1954b",
+            "colId": "8c68507d-1231-42e7-86ab-5138c9d7af21",
+            "containerId": "90c7b1dd-e41d-4db5-9675-000003172878",
+            "name": "verify_code",
+            "url": "localhost:3000/v1/auth/verify-codes/captcha",
+            "method": "POST",
+            "sortNum": 50000,
+            "created": "2023-03-09T06:19:27.665Z",
+            "modified": "2023-03-09T06:20:03.004Z",
+            "headers": [],
+            "params": [],
+            "tests": []
+        },
+        {
+            "_id": "9522b7c6-679a-4ea9-a4f4-fe751a87ac45",
+            "colId": "8c68507d-1231-42e7-86ab-5138c9d7af21",
+            "containerId": "90c7b1dd-e41d-4db5-9675-000003172878",
+            "name": "send_sms",
+            "url": "localhost:3000/v1/auth/verify-codes/phone",
+            "method": "POST",
+            "sortNum": 60000,
+            "created": "2023-03-10T08:15:53.960Z",
+            "modified": "2023-03-27T02:08:17.618Z",
+            "headers": [],
+            "params": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n    \"phone\":\"{{phone}}\",\n    \"captcha_id\": \"captcha_skip_special\",\n    \"captcha_answer\": \"123456\"\n}",
+                "form": []
+            },
+            "tests": []
+        },
+        {
+            "_id": "f7a81cda-1fb3-4e70-a6a7-281b56505885",
+            "colId": "8c68507d-1231-42e7-86ab-5138c9d7af21",
+            "containerId": "90c7b1dd-e41d-4db5-9675-000003172878",
+            "name": "send_email",
+            "url": "localhost:3000/v1/auth/verify-codes/email",
+            "method": "POST",
+            "sortNum": 70000,
+            "created": "2023-03-11T07:27:04.539Z",
+            "modified": "2023-03-11T07:29:39.829Z",
+            "headers": [],
+            "params": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n    \"email\":\"34341@testing.com\",\n    \"captcha_id\": \"captcha_skip_special\",\n    \"captcha_answer\": \"123456\"\n}",
+                "form": []
+            },
+            "tests": []
+        },
+        {
+            "_id": "474ed272-c302-4ac0-a6a9-005cb6bed469",
+            "colId": "8c68507d-1231-42e7-86ab-5138c9d7af21",
+            "containerId": "90c7b1dd-e41d-4db5-9675-000003172878",
+            "name": "current_user",
+            "url": "{{host}}:{{port}}/v1/users",
+            "method": "GET",
+            "sortNum": 80000,
+            "created": "2023-04-14T08:55:50.147Z",
+            "modified": "2023-04-14T08:58:52.034Z",
+            "headers": [],
+            "params": [],
+            "auth": {
+                "type": "bearer",
+                "bearer": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODY2NDY0NjEsImlhdCI6MTY4MTQ2MjUyMSwiaXNzIjoiR29odWIiLCJuYmYiOjE2ODE0NjI1MjEsInVzZXJfaWQiOiI3IiwidXNlcl9uYW1lIjoidGVzdGUyMnIiLCJleHBpcmVfdGltZSI6MTY4NjY0NjQ2MX0.6Yq2N84OAEXw3e4K8y3-M_d92XsEnu_adLGxA3WqyEk"
+            },
+            "tests": []
+        }
+    ],
+    "settings": {
+        "envId": "36269fce-9441-4826-8033-a921b5a2e9ee"
+    }
+}

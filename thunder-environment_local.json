@@ -1,0 +1,32 @@
+{
+    "client": "Thunder Client",
+    "environmentName": "local",
+    "dateExported": "2023-04-14T09:00:01.155Z",
+    "version": "1.0",
+    "variables": [
+        {
+            "name": "phone",
+            "value": "00001100140"
+        },
+        {
+            "name": "port",
+            "value": "3000"
+        },
+        {
+            "name": "password",
+            "value": "secret"
+        },
+        {
+            "name": "captcha_id",
+            "value": "captcha_skip_special"
+        },
+        {
+            "name": "captcha_answer",
+            "value": "123456"
+        },
+        {
+            "name": "host",
+            "value": "127.0.0.1"
+        }
+    ]
+}

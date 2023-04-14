@@ -3,6 +3,8 @@ package routes
 import (
 	"net/http"
 
+	v1_controllers "github.com/diy0663/gohub/app/http/controllers/api/v1"
+
 	"github.com/diy0663/gohub/app/http/controllers/api/v1/auth"
 	"github.com/diy0663/gohub/app/http/middlewares"
 	auth_jwt "github.com/diy0663/gohub/pkg/auth"
@@ -54,6 +56,9 @@ func RegisterAPIRoutes(r *gin.Engine) {
 			userModel := auth_jwt.CurrentUser(c)
 			response.Data(c, userModel)
 		})
+
+		user_controller := new(v1_controllers.UsersController)
+		v1.GET("/users", middlewares.AuthJWT(), user_controller.CurrentUser)
 
 	}
 }
