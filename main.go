@@ -47,6 +47,7 @@ func main() {
 	rootCmd.AddCommand(
 		cmd.CmdServe,
 		make.CmdMake,
+		cmd.CmdSeed,
 	)
 
 	// 设置默认运行的命令 (这里设置为启动web服务 CmdServe )
