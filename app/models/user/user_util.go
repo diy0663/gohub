@@ -35,3 +35,9 @@ func Get(id string) (userModel User) {
 	database.DB.Where("id = ? ", id).First(&userModel)
 	return userModel
 }
+
+// 获取全部数据
+func All() (users []User) {
+	database.DB.Find(&users)
+	return
+}
