@@ -6,6 +6,9 @@ type {{StructName}} struct {
 
     // Put fields in here
     FIXME()
+    //Name string `json:"name,omitempty"`
+	// - 表示忽略,不输出此类敏感信息
+    //Email    string `json:"-"`
 
     models.CommonTimestampsField
 }

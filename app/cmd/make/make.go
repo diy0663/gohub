@@ -40,6 +40,7 @@ func init() {
 		CmdMakeAPIController,
 		CmdMakeRequest,
 		CmdMakeFactory,
+		CmdMakeSeeder,
 	)
 }
 

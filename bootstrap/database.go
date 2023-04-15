@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/diy0663/gohub/app/models/project"
 	"github.com/diy0663/gohub/app/models/user"
 	"github.com/diy0663/gohub/pkg/config"
 	"github.com/diy0663/gohub/pkg/database"
@@ -54,5 +55,6 @@ func SetupDB() {
 	//本地开发环境才允许使用数据库自动迁移,生产环境不推荐,因为有风险, 且生成的字段类型取值长度并不准确
 	if config.Get("app.env") == "local" {
 		database.DB.AutoMigrate(&user.User{})
+		database.DB.AutoMigrate(&project.Project{})
 	}
 }
