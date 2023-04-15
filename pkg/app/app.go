@@ -22,3 +22,12 @@ func TimenowInTimezone() time.Time {
 	timezone, _ := time.LoadLocation(config.GetString("app.timezone"))
 	return time.Now().In(timezone)
 }
+
+func URL(path string) string {
+	return config.Get("app.url") + path
+}
+
+func V1URL(path string) string {
+	//return URL("/v1/" + path)
+	return config.Get("app.url") + "/v1/" + path
+}

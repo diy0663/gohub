@@ -26,3 +26,10 @@ func Connect(dbConfig gorm.Dialector, _logger gormlogger.Interface) {
 	}
 
 }
+
+// 根据Model 的结构体获取表名
+func TableName(obj interface{}) string {
+	stmt := &gorm.Statement{DB: DB}
+	stmt.Parse(obj)
+	return stmt.Schema.Table
+}
