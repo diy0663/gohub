@@ -6,8 +6,22 @@ type {{StructNamePlural}}Controller struct {
 }
 
 func (ctrl *{{StructNamePlural}}Controller) Index(c *gin.Context) {
-    {{VariableNamePlural}} := {{PackageName}}.All()
-    response.Data(c, {{VariableNamePlural}})
+
+    // 分页处理
+    request := requests.PaginationRequest{}
+	if ok := requests.Validate(c, &request, requests.Pagination); !ok {
+		return
+	}
+
+	data, pager := {{PackageName}}.Paginate(c, 10)
+	response.Data(c, gin.H{
+		"data":  data,
+		"pager": pager,
+	})
+
+
+   // {{VariableNamePlural}} := {{PackageName}}.All()
+   // response.Data(c, {{VariableNamePlural}})
 }
 
 func (ctrl *{{StructNamePlural}}Controller) Show(c *gin.Context) {
