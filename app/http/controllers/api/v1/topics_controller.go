@@ -60,28 +60,31 @@ func (ctrl *TopicsController) Store(c *gin.Context) {
 	}
 }
 
-// func (ctrl *TopicsController) Update(c *gin.Context) {
+func (ctrl *TopicsController) Update(c *gin.Context) {
 
-// 	topicModel := topic.Get(c.Param("id"))
-// 	if topicModel.ID == 0 {
-// 		response.Abort404(c)
-// 		return
-// 	}
+	topicModel := topic.Get(c.Param("id"))
+	if topicModel.ID == 0 {
+		response.Abort404(c)
+		return
+	}
 
-// 	request := requests.TopicRequest{}
-// 	bindOk := requests.Validate(c, &request, requests.TopicSave)
-// 	if !bindOk {
-// 		return
-// 	}
+	request := requests.TopicRequest{}
+	bindOk := requests.Validate(c, &request, requests.TopicSave)
+	if !bindOk {
+		return
+	}
 
-// 	topicModel.FieldName = request.FieldName
-// 	rowsAffected := topicModel.Save()
-// 	if rowsAffected > 0 {
-// 		response.Data(c, topicModel)
-// 	} else {
-// 		response.Abort500(c, "更新失败，请稍后尝试~")
-// 	}
-// }
+	topicModel.Title = request.Title
+	topicModel.Body = request.Body
+	topicModel.CategoryID = request.CategoryID
+
+	rowsAffected := topicModel.Save()
+	if rowsAffected > 0 {
+		response.Data(c, topicModel)
+	} else {
+		response.Abort500(c, "更新失败，请稍后尝试~")
+	}
+}
 
 func (ctrl *TopicsController) Delete(c *gin.Context) {
 
