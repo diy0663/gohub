@@ -2,6 +2,7 @@ package v1
 
 import (
 	"github.com/diy0663/gohub/app/models/topic"
+	"github.com/diy0663/gohub/app/policies"
 	"github.com/diy0663/gohub/app/requests"
 	"github.com/diy0663/gohub/pkg/auth"
 	"github.com/diy0663/gohub/pkg/response"
@@ -62,6 +63,7 @@ func (ctrl *TopicsController) Store(c *gin.Context) {
 
 func (ctrl *TopicsController) Update(c *gin.Context) {
 
+	// 目标数据不存在
 	topicModel := topic.Get(c.Param("id"))
 	if topicModel.ID == 0 {
 		response.Abort404(c)
@@ -71,6 +73,12 @@ func (ctrl *TopicsController) Update(c *gin.Context) {
 	request := requests.TopicRequest{}
 	bindOk := requests.Validate(c, &request, requests.TopicSave)
 	if !bindOk {
+		return
+	}
+
+	// 授权策略 ,是否有权限修改
+	if ok := policies.CanModifyTopic(c, topicModel); !ok {
+		response.Abort403(c)
 		return
 	}
 

@@ -41,6 +41,7 @@ func init() {
 		CmdMakeRequest,
 		CmdMakeFactory,
 		CmdMakeSeeder,
+		CmdMakePolicy,
 	)
 }
 
