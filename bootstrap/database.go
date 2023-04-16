@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/diy0663/gohub/app/models/category"
 	"github.com/diy0663/gohub/app/models/project"
 	"github.com/diy0663/gohub/app/models/user"
 	"github.com/diy0663/gohub/pkg/config"
@@ -56,5 +57,6 @@ func SetupDB() {
 	if config.Get("app.env") == "local" {
 		database.DB.AutoMigrate(&user.User{})
 		database.DB.AutoMigrate(&project.Project{})
+		database.DB.AutoMigrate(&category.Category{})
 	}
 }
