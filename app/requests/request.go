@@ -25,7 +25,7 @@ func validate(data interface{}, rules govalidator.MapData, messages govalidator.
 type ValidatorFunc func(interface{}, *gin.Context) map[string][]string
 
 func Validate(c *gin.Context, obj interface{}, handler ValidatorFunc) bool {
-	if err := c.ShouldBindJSON(obj); err != nil {
+	if err := c.ShouldBind(obj); err != nil {
 		c.AbortWithStatusJSON(http.StatusUnprocessableEntity, gin.H{
 			// ShouldBindJSON ,说明要求json格式
 			"message": "请求解析错误，请确认请求格式是否正确。上传文件请使用 multipart 标头，参数请使用 JSON 格式。",
