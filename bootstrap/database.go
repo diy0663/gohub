@@ -58,5 +58,7 @@ func SetupDB() {
 		database.DB.AutoMigrate(&user.User{})
 		database.DB.AutoMigrate(&project.Project{})
 		database.DB.AutoMigrate(&category.Category{})
+		// topics 表对应的model struct 里面嵌入了 user 跟 category 两个model, 数据表自动迁移之后会表结构会生成外键, 迁移后先注释掉,之后删除外键..
+		//	database.DB.AutoMigrate(&topic.Topic{})
 	}
 }
