@@ -70,6 +70,7 @@ func RegisterAPIRoutes(r *gin.Engine) {
 			categoryGroup.GET("", category_controller.Index)
 			categoryGroup.POST("", middlewares.AuthJWT(), category_controller.Store)
 			categoryGroup.PUT("/:id", middlewares.AuthJWT(), category_controller.Update)
+			categoryGroup.DELETE("/:id", middlewares.AuthJWT(), category_controller.Delete)
 		}
 
 	}
