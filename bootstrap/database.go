@@ -3,11 +3,9 @@ package bootstrap
 import (
 	"errors"
 	"fmt"
+	"os/user"
 	"time"
 
-	"github.com/diy0663/gohub/app/models/category"
-	"github.com/diy0663/gohub/app/models/project"
-	"github.com/diy0663/gohub/app/models/user"
 	"github.com/diy0663/gohub/pkg/config"
 	"github.com/diy0663/gohub/pkg/database"
 	"github.com/diy0663/gohub/pkg/logger"
@@ -56,8 +54,9 @@ func SetupDB() {
 	//本地开发环境才允许使用数据库自动迁移,生产环境不推荐,因为有风险, 且生成的字段类型取值长度并不准确
 	if config.Get("app.env") == "local" {
 		database.DB.AutoMigrate(&user.User{})
-		database.DB.AutoMigrate(&project.Project{})
-		database.DB.AutoMigrate(&category.Category{})
+		//database.DB.AutoMigrate(&project.Project{})
+		//database.DB.AutoMigrate(&category.Category{})
+		//database.DB.AutoMigrate(&link.Link{})
 		// topics 表对应的model struct 里面嵌入了 user 跟 category 两个model, 数据表自动迁移之后会表结构会生成外键, 迁移后先注释掉,之后删除外键..
 		//	database.DB.AutoMigrate(&topic.Topic{})
 	}
