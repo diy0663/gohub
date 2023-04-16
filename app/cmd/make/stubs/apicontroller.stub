@@ -59,10 +59,11 @@ func (ctrl *{{StructNamePlural}}Controller) Update(c *gin.Context) {
         return
     }
 
-    if ok := policies.CanModify{{StructName}}(c, {{VariableName}}Model); !ok {
-        response.Abort403(c)
-        return
-    }
+// 授权策略
+  //if ok := policies.CanModify{{StructName}}(c, {{VariableName}}Model); !ok {
+  //    response.Abort403(c)
+  //     return
+  // }
 
     request := requests.{{StructName}}Request{}
     bindOk := requests.Validate(c, &request, requests.{{StructName}}Save)
@@ -88,10 +89,10 @@ func (ctrl *{{StructNamePlural}}Controller) Delete(c *gin.Context) {
         return
     }
 
-    if ok := policies.CanModify{{StructName}}(c, {{VariableName}}Model); !ok {
-        response.Abort403(c)
-        return
-    }
+   // if ok := policies.CanModify{{StructName}}(c, {{VariableName}}Model); !ok {
+   //     response.Abort403(c)
+   //     return
+   //  }
 
     rowsAffected := {{VariableName}}Model.Delete()
     if rowsAffected > 0 {
