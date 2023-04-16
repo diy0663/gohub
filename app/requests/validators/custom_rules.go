@@ -70,4 +70,26 @@ func init() {
 		return nil
 	})
 
+	govalidator.AddCustomRule("exists", func(field string, rule string, message string, value interface{}) error {
+
+		//把 规则里面去掉not_exists: 这个前缀之后剩余的部分用, 分隔, 来获取对应的值, 在这类按照第一个值是数据表, 第二个值是字段名,第三个值是查询排除值, id != ?
+		explode_fields := strings.Split(strings.TrimPrefix(rule, "exists:"), ",")
+		tableName := explode_fields[0]
+		dbFields := explode_fields[1]
+
+		requestValue := value.(string)
+
+		var count int64
+		database.DB.Table(tableName).Where(dbFields+" = ? ", requestValue).Count(&count)
+		if count == 0 {
+			// 如果有自定义错误消息的话，使用自定义消息
+			if message != "" {
+				return errors.New(message)
+			}
+			return fmt.Errorf("%v 不存在", requestValue)
+		}
+
+		return nil
+	})
+
 }
