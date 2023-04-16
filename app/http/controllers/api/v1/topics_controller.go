@@ -27,8 +27,6 @@ func (ctrl *TopicsController) Index(c *gin.Context) {
 		"pager": pager,
 	})
 
-	// topics := topic.All()
-	// response.Data(c, topics)
 }
 
 func (ctrl *TopicsController) Show(c *gin.Context) {
@@ -102,10 +100,10 @@ func (ctrl *TopicsController) Delete(c *gin.Context) {
 		return
 	}
 
-	// if ok := policies.CanModifyTopic(c, topicModel); !ok {
-	// 	response.Abort403(c)
-	// 	return
-	// }
+	if ok := policies.CanModifyTopic(c, topicModel); !ok {
+		response.Abort403(c)
+		return
+	}
 
 	rowsAffected := topicModel.Delete()
 	if rowsAffected > 0 {
