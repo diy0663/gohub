@@ -51,14 +51,11 @@ func (ctrl *{{StructNamePlural}}Controller) Update(c *gin.Context) {
     }
 
     request := requests.{{StructName}}Request{}
-    bindOk, errs := requests.Validate(c, &request, requests.{{StructName}}Save)
+    bindOk := requests.Validate(c, &request, requests.{{StructName}}Save)
     if !bindOk {
         return
     }
-    if len(errs) > 0 {
-        response.ValidationError(c, errs)
-        return
-    }
+   
 
     {{VariableName}}Model.FieldName = request.FieldName
     rowsAffected := {{VariableName}}Model.Save()
