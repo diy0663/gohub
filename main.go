@@ -40,6 +40,8 @@ func main() {
 			// 连接数据库
 			bootstrap.SetupDB()
 			bootstrap.SetupRedis()
+			// 初始化缓存
+			bootstrap.SetupCache()
 		},
 	}
 
