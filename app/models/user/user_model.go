@@ -8,11 +8,16 @@ import (
 
 type User struct {
 	models.BaseModel
-	Name string `json:"name,omitempty"`
+	Name string `gorm:"type:varchar(50);index;" json:"name,omitempty"`
+
+	City         string `gorm:"type:varchar(50);" json:"city,omitempty"`
+	Introduction string `gorm:"type:varchar(255);" json:"introduction,omitempty"`
+	Avatar       string `type:varchar(255);default:null" json:"avatar,omitempty"`
+
 	// - 表示忽略,不输出此类敏感信息
-	Email    string `json:"-"`
-	Phone    string `json:"-"`
-	Password string `json:"-"`
+	Email    string `gorm:"type:varchar(30);index;" json:"-"`
+	Phone    string `gorm:"type:varchar(50);index;" json:"-"`
+	Password string `gorm:"type:varchar(100);" json:"-"`
 	models.CommonTimestampsField
 }
 

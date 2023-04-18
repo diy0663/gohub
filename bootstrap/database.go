@@ -3,9 +3,10 @@ package bootstrap
 import (
 	"errors"
 	"fmt"
-	"os/user"
+
 	"time"
 
+	"github.com/diy0663/gohub/app/models/user"
 	"github.com/diy0663/gohub/pkg/config"
 	"github.com/diy0663/gohub/pkg/database"
 	"github.com/diy0663/gohub/pkg/logger"
