@@ -1,8 +1,12 @@
 package link
 
 import (
+	"time"
+
 	"github.com/diy0663/gohub/pkg/app"
+	"github.com/diy0663/gohub/pkg/cache"
 	"github.com/diy0663/gohub/pkg/database"
+	"github.com/diy0663/gohub/pkg/helper"
 	"github.com/diy0663/gohub/pkg/paginator"
 	"github.com/gin-gonic/gin"
 )
@@ -22,6 +26,28 @@ func GetBy(field, value string) (link Link) {
 func All() (links []Link) {
 	database.DB.Find(&links)
 	return
+}
+
+func AllCached() (links []Link) {
+	// 设置缓存 key
+	cacheKey := "links:all"
+	// 设置过期时间
+	expireTime := 120 * time.Minute
+	// 取数据
+	cache.GetObject(cacheKey, &links)
+
+	// 如果数据为空
+	if helper.Empty(links) {
+		// 查询数据库
+		links = All()
+		if helper.Empty(links) {
+			return links
+		}
+		// 设置缓存
+		cache.Set(cacheKey, links, expireTime)
+	}
+	return
+
 }
 
 func IsExist(field, value string) bool {
