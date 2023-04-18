@@ -62,37 +62,36 @@ func (ctrl *UsersController) Index(c *gin.Context) {
 // 	}
 // }
 
-// func (ctrl *UsersController) Update(c *gin.Context) {
+func (ctrl *UsersController) UpdateProfile(c *gin.Context) {
 
-// 	userModel := user.Get(c.Param("id"))
-// 	if userModel.ID == 0 {
-// 		response.Abort404(c)
-// 		return
-// 	}
+	userModel := auth.CurrentUser(c)
+	if userModel.ID == 0 {
+		response.Abort404(c)
+		return
+	}
 
-// 	if ok := policies.CanModifyUser(c, userModel); !ok {
-// 		response.Abort403(c)
-// 		return
-// 	}
+	// if ok := policies.CanModifyUser(c, userModel); !ok {
+	// 	response.Abort403(c)
+	// 	return
+	// }
 
-// 	request := requests.UserRequest{}
-// 	bindOk, errs := requests.Validate(c, &request, requests.UserSave)
-// 	if !bindOk {
-// 		return
-// 	}
-// 	if len(errs) > 0 {
-// 		response.ValidationError(c, errs)
-// 		return
-// 	}
+	request := requests.UserUpdateProfileRequest{}
+	bindOk := requests.Validate(c, &request, requests.UserUpdateProfile)
+	if !bindOk {
+		return
+	}
 
-// 	userModel.FieldName = request.FieldName
-// 	rowsAffected := userModel.Save()
-// 	if rowsAffected > 0 {
-// 		response.Data(c, userModel)
-// 	} else {
-// 		response.Abort500(c, "更新失败，请稍后尝试~")
-// 	}
-// }
+	userModel.Name = request.Name
+	userModel.City = request.City
+	userModel.Introduction = request.Introduction
+
+	rowsAffected := userModel.Save()
+	if rowsAffected > 0 {
+		response.Data(c, userModel)
+	} else {
+		response.Abort500(c, "更新失败，请稍后尝试~")
+	}
+}
 
 // func (ctrl *UsersController) Delete(c *gin.Context) {
 
