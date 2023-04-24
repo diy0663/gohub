@@ -25,7 +25,11 @@ func RegisterAPIRoutes(r *gin.Engine) {
 
 		authGroup := v1.Group("/auth")
 		{
-			signup_controller := new(auth.SignupController)
+			// make 函数就只能用于  slice,map , chanel
+
+			// 结构体可以用new创建 ,也可已直接声明式创建
+			//signup_controller := new(auth.SignupController)
+			signup_controller := auth.SignupController{}
 			authGroup.POST("/signup/phone/exist", signup_controller.IsPhoneExists)
 			authGroup.POST("/signup/email/exist", signup_controller.IsEmailExists)
 
