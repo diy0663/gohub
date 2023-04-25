@@ -47,6 +47,7 @@ func GetSeeder(name string) Seeder {
 
 func RunAll() {
 
+	// make 的同时也完成了这个map的初始化, 一个map 假如在声明的时候赋值是还不确定的,就得用make去.
 	executed := make(map[string]string)
 	// 先运行指定顺序的
 	for _, name := range orderedSeederNames {
