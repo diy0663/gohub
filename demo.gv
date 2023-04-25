@@ -1,0 +1,34 @@
+
+digraph {
+rankdir="LR"
+"auth.LoginController" -> { "v1.BaseApiController" };
+"auth.PasswordResetController" -> { "v1.BaseApiController" };
+"auth.SignupController" -> { "v1.BaseApiController" };
+"auth.VerifyCodeController" -> { "v1.BaseApiController" };
+"v1.CategoriesController" -> { "v1.BaseApiController" };
+"v1.LinksController" -> { "v1.BaseApiController" };
+"v1.TopicsController" -> { "v1.BaseApiController" };
+"v1.UsersController" -> { "v1.BaseApiController" };
+"middlewares.responseBodyWriter" -> { "gin.ResponseWriter" "bytes.Buffer" };
+"category.Category" -> { "models.BaseModel" "models.CommonTimestampsField" };
+"link.Link" -> { "models.BaseModel" "models.CommonTimestampsField" };
+"models.CommonTimestampsField" -> { "time.Time" };
+"project.Project" -> { "models.BaseModel" "models.CommonTimestampsField" };
+"topic.Topic" -> { "models.CommonTimestampsField" "models.BaseModel" "user.User" "category.Category" };
+"user.User" -> { "models.BaseModel" "models.CommonTimestampsField" };
+"cache.CacheService" -> { "cache.Store" };
+"cache.RedisStore" -> { "redis.RedisClient" };
+"captcha.Captcha" -> { "base64Captcha.Captcha" };
+"captcha.RedisStore" -> { "redis.RedisClient" };
+"jwt.JWTCustomClaims" -> { "jwtpkg.StandardClaims" };
+"jwt.JWT" -> { "jwt.byte" "time.Duration" };
+"logger.GormLogger" -> { "zap.Logger" "time.Duration" };
+"mail.Email" -> { "mail.From" "mail.string" "mail.byte" };
+"mail.Mailer" -> { "mail.Driver" };
+"paginator.Paginator" -> { "gorm.DB" "gin.Context" };
+"redis.RedisClient" -> { "redis.Client" "context.Context" };
+"seed.Seeder" -> { "seed.SeederFunc" };
+"sms.SMS" -> { "sms.Driver" };
+"verifycode.RedisStore" -> { "redis.RedisClient" };
+"verifycode.VerifyCode" -> { "verifycode.Store" };
+}
