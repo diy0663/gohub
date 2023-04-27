@@ -24,6 +24,11 @@ func Connect(dbConfig gorm.Dialector, _logger gormlogger.Interface) {
 	if err != nil {
 		fmt.Println(err.Error())
 	}
+	err = SQLDB.Ping()
+	if err != nil {
+		fmt.Println(err.Error())
+		panic("数据库连接出错!")
+	}
 
 }
 
