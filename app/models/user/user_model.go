@@ -12,7 +12,7 @@ type User struct {
 
 	City         string `gorm:"type:varchar(50);" json:"city,omitempty"`
 	Introduction string `gorm:"type:varchar(255);" json:"introduction,omitempty"`
-	Avatar       string `type:varchar(255);default:null" json:"avatar,omitempty"`
+	Avatar       string `gorm:"type:varchar(255);default:null" json:"avatar,omitempty"`
 
 	// - 表示忽略,不输出此类敏感信息
 	Email    string `gorm:"type:varchar(30);index;" json:"-"`
