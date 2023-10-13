@@ -11,6 +11,7 @@ import (
 
 func init() {
 	btsConfig.InitAllConfig()
+
 }
 
 // main  入口保持整洁
@@ -19,7 +20,11 @@ func main() {
 	// 自行配置 cmd+D 用于复制单行
 
 	r := gin.New()
-	// 中间件
+
+	//连接数据库
+	bootstrap.SetupDB()
+
+	// 路由 + 中间件
 	bootstrap.SetupRoute(r)
 	//  http://127.0.0.1:8080
 	err := r.Run(":" + config.GetString("app.port"))
