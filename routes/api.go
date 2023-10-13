@@ -3,6 +3,7 @@ package routes
 import (
 	"net/http"
 
+	"github.com/diy0663/gohub/app/http/controllers/v1/auth"
 	"github.com/gin-gonic/gin"
 )
 
@@ -18,6 +19,13 @@ func RegisterAPIRoutes(r *gin.Engine) {
 				"Hello": "V1!",
 			})
 		})
+
+		authGroup := v1.Group("/auth")
+		{
+			sc := new(auth.SignupController)
+			authGroup.POST("/signup/phone/exist", sc.IsPhoneExist)
+		}
+
 	}
 
 	v2 := r.Group("/v2")
