@@ -11,6 +11,7 @@ import (
 
 func init() {
 	btsConfig.InitAllConfig()
+	bootstrap.SetupLogger()
 
 }
 
@@ -19,6 +20,7 @@ func main() {
 	// cmd+shift+K 用于vscode 删除 单行
 	// 自行配置 cmd+D 用于复制单行
 
+	gin.SetMode(gin.ReleaseMode)
 	r := gin.New()
 
 	//连接数据库
