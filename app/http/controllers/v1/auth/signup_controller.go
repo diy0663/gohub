@@ -20,6 +20,7 @@ type SignupController struct {
 }
 
 func (sc *SignupController) IsPhoneExist(c *gin.Context) {
+	// panic("验证recovery")
 
 	request := requests.SignupPhoneExistRequest{}
 	// 要求传过来为json 格式
