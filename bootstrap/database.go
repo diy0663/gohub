@@ -5,14 +5,12 @@ import (
 	"fmt"
 	"time"
 
-	userModel "github.com/diy0663/gohub/app/models/user"
-
 	"github.com/diy0663/go_project_packages/config"
+	grom_logger "github.com/diy0663/go_project_packages/logger"
 	"github.com/diy0663/gohub/pkg/database"
 	"gorm.io/driver/mysql"
 
 	"gorm.io/gorm"
-	"gorm.io/gorm/logger"
 )
 
 // 初始化数据库链接,被main 使用
@@ -39,7 +37,8 @@ func SetupDB() {
 	}
 
 	// 连接数据库，并设置 GORM 的日志模式
-	database.Connect(dbConfig, logger.Default.LogMode(logger.Info))
+	// database.Connect(dbConfig, logger.Default.LogMode(logger.Info))
+	database.Connect(dbConfig, grom_logger.NewGormLogger())
 
 	// 设置最大连接数
 	database.SQLDB.SetMaxOpenConns(config.GetInt("database.mysql.max_open_connections"))
@@ -49,5 +48,5 @@ func SetupDB() {
 	database.SQLDB.SetConnMaxLifetime(time.Duration(config.GetInt("database.mysql.max_life_seconds")) * time.Second)
 
 	// 迁移生成数据表结构
-	database.DB.AutoMigrate(&userModel.User{})
+	// database.DB.AutoMigrate(&userModel.User{})
 }
