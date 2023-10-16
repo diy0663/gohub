@@ -1,8 +1,7 @@
 package auth
 
 import (
-	"net/http"
-
+	"github.com/diy0663/go_project_packages/response"
 	v1 "github.com/diy0663/gohub/app/http/controllers/v1"
 	"github.com/diy0663/gohub/app/models/user"
 	"github.com/diy0663/gohub/app/requests"
@@ -29,7 +28,10 @@ func (sc *SignupController) IsPhoneExist(c *gin.Context) {
 	}
 
 	// 返回数据库的查询结果
-	c.JSON(http.StatusOK, gin.H{
+	// c.JSON(http.StatusOK, gin.H{
+	// 	"exists": user.IsPhoneExists(request.Phone),
+	// })
+	response.JSON(c, gin.H{
 		"exists": user.IsPhoneExists(request.Phone),
 	})
 
@@ -45,7 +47,7 @@ func (sc *SignupController) IsEmailExist(c *gin.Context) {
 		return
 	}
 	// 返回数据库的查询结果
-	c.JSON(http.StatusOK, gin.H{
+	response.JSON(c, gin.H{
 		"exists": user.IsEmailExists(request.Email),
 	})
 

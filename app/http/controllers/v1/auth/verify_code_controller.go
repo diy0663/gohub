@@ -1,10 +1,9 @@
 package auth
 
 import (
-	"net/http"
-
 	"github.com/diy0663/go_project_packages/captcha"
 	"github.com/diy0663/go_project_packages/logger"
+	"github.com/diy0663/go_project_packages/response"
 	v1 "github.com/diy0663/gohub/app/http/controllers/v1"
 	"github.com/gin-gonic/gin"
 )
@@ -21,12 +20,11 @@ type VerifyCodeController struct {
 	v1.BaseAPIController
 }
 
-//
-
 func (vc *VerifyCodeController) ShowCaptcha(c *gin.Context) {
 	id, base64Data, err := captcha.NewCaptcha().GenerateCaptcha()
 	logger.LogIf(err)
-	c.JSON(http.StatusOK, gin.H{
+
+	response.JSON(c, gin.H{
 		"captcha_id":    id,
 		"captcha_image": base64Data,
 	})
