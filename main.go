@@ -25,6 +25,7 @@ func main() {
 
 	//连接数据库
 	bootstrap.SetupDB()
+	bootstrap.SetupRedis()
 
 	// 路由 + 中间件
 	bootstrap.SetupRoute(r)

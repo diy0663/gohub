@@ -7,7 +7,6 @@ import (
 func init() {
 	configPkg.Add("app", map[string]interface{}{
 		"name": configPkg.Env("APP_NAME", "Gohub"),
-
 		// 当前环境，用以区分多环境，一般为 local, stage, production, test
 		"env": configPkg.Env("APP_ENV", "production"),
 
