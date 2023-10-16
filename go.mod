@@ -5,6 +5,7 @@ go 1.20
 require (
 	github.com/diy0663/go_project_packages v1.0.1
 	github.com/gin-gonic/gin v1.9.1
+	github.com/thedevsaddam/govalidator v1.9.10
 	gorm.io/driver/mysql v1.5.2
 	gorm.io/gorm v1.25.5
 )
