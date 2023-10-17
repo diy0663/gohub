@@ -1,6 +1,10 @@
 package user
 
-import "github.com/diy0663/gohub/app/models"
+import (
+	"github.com/diy0663/go_project_packages/hash"
+	"github.com/diy0663/gohub/app/models"
+	"github.com/diy0663/gohub/pkg/database"
+)
 
 type User struct {
 	models.BaseModel
@@ -13,4 +17,13 @@ type User struct {
 	Password string `json:"-" gorm:"password,not null;" valid:"password"`
 
 	models.CommonTimestampsField
+}
+
+func (userModel *User) Create() {
+	database.DB.Create(&userModel)
+}
+
+// 密码对比
+func (userModel *User) Comparepassword(_password string) bool {
+	return hash.BcryptCheck(userModel.Password, _password)
 }
