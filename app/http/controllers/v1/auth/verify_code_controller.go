@@ -2,9 +2,13 @@ package auth
 
 import (
 	"github.com/diy0663/go_project_packages/captcha"
+	"github.com/diy0663/go_project_packages/config"
+	"github.com/diy0663/go_project_packages/email"
 	"github.com/diy0663/go_project_packages/logger"
 	"github.com/diy0663/go_project_packages/response"
+	"github.com/diy0663/go_project_packages/verifycode"
 	v1 "github.com/diy0663/gohub/app/http/controllers/v1"
+	"github.com/diy0663/gohub/app/requests"
 	"github.com/gin-gonic/gin"
 )
 
@@ -28,4 +32,30 @@ func (vc *VerifyCodeController) ShowCaptcha(c *gin.Context) {
 		"captcha_id":    id,
 		"captcha_image": base64Data,
 	})
+}
+
+// 发送邮件验证码
+func (vc *VerifyCodeController) SendUsingEmail(c *gin.Context) {
+	request := requests.VerifyCodeEmailRequest{}
+	if ok := requests.RequestValidate(c, &request, requests.VerifyCodeEmail); !ok {
+		return
+	}
+
+	// 注意config里面要有verifycode 配置文件
+	code := verifycode.NewVerifyCode().Generate(request.Email)
+
+	// 验证通过,发送邮件email
+	err := email.NewEmail(&email.SMTPInfo{
+		Host:     config.GetString("mail.smtp.host"),
+		Port:     config.GetInt("mail.smtp.port"),
+		IsSSL:    false,
+		UserName: config.GetString("mail.smtp.username"),
+		Password: config.GetString("mail.smtp.password"),
+		From:     config.GetString("mail.from.address"),
+	}).SendMail([]string{request.Email}, "请查收注册验证码", "您的邮件验证码是:"+code)
+	if err != nil {
+		response.Abort500(c, "邮件发送失败")
+	} else {
+		response.Success(c)
+	}
 }
