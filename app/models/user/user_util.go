@@ -23,6 +23,11 @@ func GetByPhone(phone string) (userModel User) {
 
 }
 
+func Get(idStr string) (userModel User) {
+	database.DB.Where("id=?", idStr).First(&userModel)
+	return
+}
+
 func GetByMulti(loginId string) (userModel User) {
 	database.DB.Where("phone=?", loginId).Or("email=?", loginId).Or("name=?", loginId).First(&userModel)
 	return
