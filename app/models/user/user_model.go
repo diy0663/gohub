@@ -25,5 +25,5 @@ func (userModel *User) Create() {
 
 // 密码对比
 func (userModel *User) Comparepassword(_password string) bool {
-	return hash.BcryptCheck(userModel.Password, _password)
+	return hash.BcryptCheck(_password, userModel.Password)
 }

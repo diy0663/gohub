@@ -16,3 +16,14 @@ func IsPhoneExists(phone string) bool {
 	database.DB.Model(&User{}).Where("phone = ? ", phone).Count(&count)
 	return count > 0
 }
+
+func GetByPhone(phone string) (userModel User) {
+	database.DB.Where("phone=?", phone).First(&userModel)
+	return
+
+}
+
+func GetByMulti(loginId string) (userModel User) {
+	database.DB.Where("phone=?", loginId).Or("email=?", loginId).Or("name=?", loginId).First(&userModel)
+	return
+}
