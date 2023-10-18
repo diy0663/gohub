@@ -5,6 +5,7 @@ go 1.20
 require (
 	github.com/diy0663/go_project_packages v1.0.3
 	github.com/gin-gonic/gin v1.9.1
+	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/spf13/cast v1.5.1
 	github.com/thedevsaddam/govalidator v1.9.10
 	go.uber.org/zap v1.21.0

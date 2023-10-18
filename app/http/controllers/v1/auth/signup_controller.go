@@ -5,6 +5,7 @@ import (
 	v1 "github.com/diy0663/gohub/app/http/controllers/v1"
 	"github.com/diy0663/gohub/app/models/user"
 	"github.com/diy0663/gohub/app/requests"
+	"github.com/diy0663/gohub/pkg/jwt"
 	"github.com/gin-gonic/gin"
 )
 
@@ -53,6 +54,7 @@ func (sc *SignupController) IsEmailExist(c *gin.Context) {
 
 }
 
+// 根据邮件创建用户
 func (sc *SignupController) SignupUsingEmail(c *gin.Context) {
 	request := requests.SignupUsingEmailRequest{}
 	ok := requests.RequestValidate(c, &request, requests.SignupUsingEmail)
@@ -69,7 +71,8 @@ func (sc *SignupController) SignupUsingEmail(c *gin.Context) {
 	userModel.Create()
 	if userModel.ID > 0 {
 		response.JSON(c, gin.H{
-			"data": userModel,
+			"token": jwt.NewJWT().IssueToken(userModel.GetStringID(), userModel.Name),
+			"data":  userModel,
 		})
 	} else {
 		response.Abort500(c, "创建用户失败，请稍后尝试~")
