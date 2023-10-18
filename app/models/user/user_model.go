@@ -27,3 +27,13 @@ func (userModel *User) Create() {
 func (userModel *User) Comparepassword(_password string) bool {
 	return hash.BcryptCheck(_password, userModel.Password)
 }
+
+// Grom 里面的 Create 方法跟Save 方法有啥区别
+// Create方法是用于创建新的记录，而Save方法是用于保存已有记录的变更。Create方法会在数据库中插入一条新的记录，
+//	而Save方法会根据记录的主键（如果存在）进行更新或插入操作
+
+// 根据model 的值更新表数据
+func (userModel *User) Save() (rowAffected int64) {
+	result := database.DB.Save(&userModel)
+	return result.RowsAffected
+}

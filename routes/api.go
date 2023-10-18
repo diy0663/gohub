@@ -38,6 +38,9 @@ func RegisterAPIRoutes(r *gin.Engine) {
 			authGroup.POST("/verify-codes/captcha", vc.ShowCaptcha)
 			authGroup.POST("/verify-codes/email", vc.SendUsingEmail)
 
+			pwc := new(auth.PasswordController)
+			authGroup.POST("password-reset/using-email", pwc.ResetByEmail)
+
 		}
 
 	}
