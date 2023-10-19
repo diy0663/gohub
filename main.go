@@ -26,6 +26,8 @@ func main() {
 	// 自行配置 cmd+D 用于复制单行
 
 	var rootCmd = &cobra.Command{
+		// go run main.go 的作用相当于执行 Gohub
+		// 剩下的,就是在后面拼接 子命令, 不传就默认拼接 serve
 		Use:     "Gohub",
 		Short:   "",
 		Long:    `Default will run "serve" command, you can use "-h" flag to see all subcommands`,
@@ -39,7 +41,10 @@ func main() {
 
 	// 添加注册子命令
 	rootCmd.AddCommand(
+		// serve 被设置为了默认命令, 所以  go run main.go 或者  go run main.go serve 都可
 		cmd.CmdServe,
+		// go run main.go key 即可执行9
+		cmd.CmdKey,
 	)
 	cmd.RegisterDefaultCmd(rootCmd, cmd.CmdServe)
 
