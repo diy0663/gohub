@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/diy0663/gohub/app/http/controllers/v1/auth"
+	"github.com/diy0663/gohub/app/http/middlewares"
 	"github.com/gin-gonic/gin"
 )
 
@@ -27,19 +28,20 @@ func RegisterAPIRoutes(r *gin.Engine) {
 			authGroup.POST("/signup/email/exist", sc.IsEmailExist)
 
 			lc := new(auth.LoginController)
-			// 登录
-			authGroup.POST("/login/using-password", lc.LoginByPassword)
-			authGroup.POST("/login/refresh-token", lc.RefreshToken)
+			// 登录 (加上游客中间件)
+			authGroup.POST("/login/using-password", middlewares.GuestJWT(), middlewares.LimitIP("5-M"), lc.LoginByPassword)
+			authGroup.POST("/login/refresh-token", middlewares.AuthJWT(), lc.RefreshToken)
 
-			// 使用邮件进行注册
-			authGroup.POST("/signup/using-email", sc.SignupUsingEmail)
+			// 使用邮件进行注册 (在邮件注册这个路由上,每个IP每分钟最多请求5次  ,注意失败次数也算在内)
+			authGroup.POST("/signup/using-email", middlewares.GuestJWT(), middlewares.LimitPerRoute("5-M"), sc.SignupUsingEmail)
 
 			vc := new(auth.VerifyCodeController)
-			authGroup.POST("/verify-codes/captcha", vc.ShowCaptcha)
+			// 基于IP做限量,获取图片验证码,每分钟限制20次
+			authGroup.POST("/verify-codes/captcha", middlewares.LimitIP("20-M"), vc.ShowCaptcha)
 			authGroup.POST("/verify-codes/email", vc.SendUsingEmail)
 
 			pwc := new(auth.PasswordController)
-			authGroup.POST("password-reset/using-email", pwc.ResetByEmail)
+			authGroup.POST("password-reset/using-email", middlewares.AuthJWT(), pwc.ResetByEmail)
 
 		}
 
