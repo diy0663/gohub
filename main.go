@@ -2,16 +2,21 @@ package main
 
 import (
 	"fmt"
+	"os"
 
-	config "github.com/diy0663/go_project_packages/config"
+	"github.com/diy0663/gohub/app/cmd"
 	"github.com/diy0663/gohub/bootstrap"
 	btsConfig "github.com/diy0663/gohub/config"
-	"github.com/gin-gonic/gin"
+	"github.com/diy0663/gohub/pkg/console"
+	"github.com/spf13/cobra"
 )
 
 func init() {
 	btsConfig.InitAllConfig()
 	bootstrap.SetupLogger()
+	//连接数据库
+	bootstrap.SetupDB()
+	bootstrap.SetupRedis()
 
 }
 
@@ -20,20 +25,26 @@ func main() {
 	// cmd+shift+K 用于vscode 删除 单行
 	// 自行配置 cmd+D 用于复制单行
 
-	gin.SetMode(gin.ReleaseMode)
-	r := gin.New()
+	var rootCmd = &cobra.Command{
+		Use:     "Gohub",
+		Short:   "",
+		Long:    `Default will run "serve" command, you can use "-h" flag to see all subcommands`,
+		Example: "Gohub serve",
+		// rootCmd 的所有子命令都会执行以下代码
+		PersistentPreRun: func(command *cobra.Command, args []string) {
+			// 其实, root 以及其子命令也依赖main , main 执行前 也有init方法要执行
+			// 所以  某种层面这个 PersistentPreRun 达到的效果也跟 init 一样
+		},
+	}
 
-	//连接数据库
-	bootstrap.SetupDB()
-	bootstrap.SetupRedis()
+	// 添加注册子命令
+	rootCmd.AddCommand(
+		cmd.CmdServe,
+	)
+	cmd.RegisterDefaultCmd(rootCmd, cmd.CmdServe)
 
-	// 路由 + 中间件
-	bootstrap.SetupRoute(r)
-	//  http://127.0.0.1:8080
-	err := r.Run(":" + config.GetString("app.port"))
-	if err != nil {
-		//  错误处理，端口被占用了或者其他错误
-		fmt.Println(err.Error())
+	if err := rootCmd.Execute(); err != nil {
+		console.Exit(fmt.Sprintf("Failed to run app with %v: %s", os.Args, err.Error()))
 	}
 
 }
