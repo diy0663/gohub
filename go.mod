@@ -3,9 +3,10 @@ module github.com/diy0663/gohub
 go 1.20
 
 require (
-	github.com/diy0663/go_project_packages v1.0.3
+	github.com/diy0663/go_project_packages v1.0.5
 	github.com/gin-gonic/gin v1.9.1
 	github.com/golang-jwt/jwt v3.2.2+incompatible
+	github.com/iancoleman/strcase v0.2.0
 	github.com/mgutz/ansi v0.0.0-20200706080929-d51e80ef957d
 	github.com/spf13/cast v1.5.1
 	github.com/spf13/cobra v1.7.0
@@ -23,6 +24,7 @@ require (
 	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
 	github.com/fsnotify/fsnotify v1.6.0 // indirect
 	github.com/gabriel-vasile/mimetype v1.4.2 // indirect
+	github.com/gertd/go-pluralize v0.2.0 // indirect
 	github.com/gin-contrib/sse v0.1.0 // indirect
 	github.com/go-playground/locales v0.14.1 // indirect
 	github.com/go-playground/universal-translator v0.18.1 // indirect

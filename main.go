@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/diy0663/gohub/app/cmd"
+	"github.com/diy0663/gohub/app/cmd/make"
 	"github.com/diy0663/gohub/bootstrap"
 	btsConfig "github.com/diy0663/gohub/config"
 	"github.com/diy0663/gohub/pkg/console"
@@ -45,6 +46,8 @@ func main() {
 		cmd.CmdServe,
 		// go run main.go key 即可执行9
 		cmd.CmdKey,
+		make.CmdMake,
+		cmd.CmdTestCommand,
 	)
 	cmd.RegisterDefaultCmd(rootCmd, cmd.CmdServe)
 

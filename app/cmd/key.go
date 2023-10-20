@@ -24,6 +24,7 @@ func runKeyGenerate(cmd *cobra.Command, args []string) {
 	console.Warning("please go to .env file to change the APP_KEY option")
 }
 
+// 获取指定长度的随机字符串
 func RandomString(length int) string {
 
 	rand.New(rand.NewSource(time.Now().UnixNano()))
