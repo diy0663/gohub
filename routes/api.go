@@ -3,6 +3,7 @@ package routes
 import (
 	"net/http"
 
+	// 别名, 因为 v1 以及早被 路由分组用了
 	v1_controller "github.com/diy0663/gohub/app/http/controllers/v1"
 	"github.com/diy0663/gohub/app/http/controllers/v1/auth"
 	"github.com/diy0663/gohub/app/http/middlewares"
@@ -46,6 +47,7 @@ func RegisterAPIRoutes(r *gin.Engine) {
 
 		}
 
+		// 这里面需要注意, 我们路由分组用了v1, 第一版本的控制器包名也是v1,所以只能使用别名 v1_controller 来给控制器这边用
 		uc_controller := new(v1_controller.UsersController)
 		v1.GET("/user", middlewares.AuthJWT(), uc_controller.CurrentUser)
 
