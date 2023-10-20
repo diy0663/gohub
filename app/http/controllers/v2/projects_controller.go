@@ -8,6 +8,7 @@ import (
 
 // todo 注意, 需要自行保存文件之后自动import 包进来
 // todo 控制器这里有个版本控制 类似 v1, v2
+// todo 还需要自行去添加对应的路由,以及是否加中间件等
 
 type ProjectsController struct {
 
@@ -33,7 +34,7 @@ func (ctrl *ProjectsController) Store(c *gin.Context) {
 	/*
 	   request := requests.ProjectRequest{}
 
-	   	if ok := requests.Validate(c, &request, requests.ProjectSave); !ok {
+	   	if ok := requests.RequestValidate(c, &request, requests.ProjectSave); !ok {
 	   	    return
 	   	}
 

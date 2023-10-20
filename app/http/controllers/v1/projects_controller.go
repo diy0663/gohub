@@ -3,6 +3,7 @@ package v1
 import (
 	"github.com/diy0663/go_project_packages/response"
 	"github.com/diy0663/gohub/app/models/project"
+	"github.com/diy0663/gohub/app/requests"
 	"github.com/gin-gonic/gin"
 )
 
@@ -28,26 +29,28 @@ func (ctrl *ProjectsController) Show(c *gin.Context) {
 }
 
 func (ctrl *ProjectsController) Store(c *gin.Context) {
-	/*
-	   request := requests.ProjectRequest{}
 
-	   	if ok := requests.Validate(c, &request, requests.ProjectSave); !ok {
-	   	    return
-	   	}
+	request := requests.ProjectRequest{}
 
-	   	projectModel := project.Project{
-	   	    FieldName:      request.FieldName,
-	   	}
+	if ok := requests.RequestValidate(c, &request, requests.ProjectSave); !ok {
+		return
+	}
 
-	   projectModel.Create()
+	projectModel := project.Project{
 
-	   	if projectModel.ID > 0 {
-	   	    response.Created(c, projectModel)
-	   	} else {
+		Name:     request.Name,
+		Comments: request.Comments,
+	}
 
-	   	    response.Abort500(c, "创建失败，请稍后尝试~")
-	   	}
-	*/
+	projectModel.Create()
+
+	if projectModel.ID > 0 {
+		response.Created(c, projectModel)
+	} else {
+
+		response.Abort500(c, "创建失败，请稍后尝试~")
+	}
+
 }
 
 func (ctrl *ProjectsController) Update(c *gin.Context) {
