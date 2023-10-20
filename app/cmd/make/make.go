@@ -37,8 +37,11 @@ type Model struct {
 	PackageName string
 }
 
-// 打包
-//
+// 打包  embed.FS —— 以文件系统方式加载目录和子目录文件树
+// 参考 https://learnku.com/courses/go-basic/1.19/packaging-go-programs-with-embedded/13445
+// 在本项目中, 最终运行 只需要打包后的应用+ .env 即可
+// embed 读取相对路径是相对于书写 //go:embed 指令的 .go 文件的。 注意只能在同级目录下进行
+
 //go:embed stubs
 var stubsFS embed.FS
 
@@ -53,6 +56,7 @@ var CmdMake = &cobra.Command{
 func init() {
 	CmdMake.AddCommand(
 		CmdMakeCMD,
+		CmdMakeModel,
 	)
 
 }

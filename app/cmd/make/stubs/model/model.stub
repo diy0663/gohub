@@ -1,0 +1,28 @@
+//Package {{PackageName}} 模型
+package {{PackageName}}
+
+// todo  需要手动保存之后 自动 import 进来,同时自行检查引入的包是否正确
+
+type {{StructName}} struct {
+    models.BaseModel
+
+    // Put fields in here
+    FIXME()
+
+    models.CommonTimestampsField
+}
+
+func ({{VariableName}} *{{StructName}}) Create() {
+    database.DB.Create(&{{VariableName}})
+}
+
+// 更新
+func ({{VariableName}} *{{StructName}}) Save() (rowsAffected int64) {
+    result := database.DB.Save(&{{VariableName}})
+    return result.RowsAffected
+}
+
+func ({{VariableName}} *{{StructName}}) Delete() (rowsAffected int64) {
+    result := database.DB.Delete(&{{VariableName}})
+    return result.RowsAffected
+}
