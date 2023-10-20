@@ -49,4 +49,5 @@ func SetupDB() {
 
 	// 迁移生成数据表结构
 	// database.DB.AutoMigrate(&userModel.User{})
+	//database.DB.AutoMigrate(&project.Project{})
 }
