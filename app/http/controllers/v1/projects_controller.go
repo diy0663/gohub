@@ -9,14 +9,27 @@ import (
 
 // todo 注意, 需要自行保存文件之后自动import 包进来
 // todo 控制器这里有个版本控制 类似 v1, v2
+// todo 还需要自行去添加对应的路由,以及是否加中间件等
 
 type ProjectsController struct {
 	BaseAPIController
 }
 
 func (ctrl *ProjectsController) Index(c *gin.Context) {
-	projects := project.All()
-	response.Data(c, projects)
+
+	// 分页的参数验证
+	request := requests.PaginationRequest{}
+	if ok := requests.RequestValidate(c, &request, requests.Pagination); !ok {
+
+		return
+	}
+
+	data, pager := project.Paginate(c, 10)
+	response.JSON(c, gin.H{
+		"data":  data,
+		"pager": pager,
+	})
+
 }
 
 func (ctrl *ProjectsController) Show(c *gin.Context) {
@@ -29,28 +42,26 @@ func (ctrl *ProjectsController) Show(c *gin.Context) {
 }
 
 func (ctrl *ProjectsController) Store(c *gin.Context) {
+	/*
+	   request := requests.ProjectRequest{}
 
-	request := requests.ProjectRequest{}
+	   	if ok := requests.RequestValidate(c, &request, requests.ProjectSave); !ok {
+	   	    return
+	   	}
 
-	if ok := requests.RequestValidate(c, &request, requests.ProjectSave); !ok {
-		return
-	}
+	   	projectModel := project.Project{
+	   	    FieldName:      request.FieldName,
+	   	}
 
-	projectModel := project.Project{
+	   projectModel.Create()
 
-		Name:     request.Name,
-		Comments: request.Comments,
-	}
+	   	if projectModel.ID > 0 {
+	   	    response.Created(c, projectModel)
+	   	} else {
 
-	projectModel.Create()
-
-	if projectModel.ID > 0 {
-		response.Created(c, projectModel)
-	} else {
-
-		response.Abort500(c, "创建失败，请稍后尝试~")
-	}
-
+	   	    response.Abort500(c, "创建失败，请稍后尝试~")
+	   	}
+	*/
 }
 
 func (ctrl *ProjectsController) Update(c *gin.Context) {

@@ -11,10 +11,9 @@ import (
 type Project struct {
 	models.BaseModel
 
+	// Put fields in here
 	Name     string `json:"name,omitempty" gorm:"name,not null;" valid:"name"`
 	Comments string `json:"comments,omitempty" gorm:"comments,not null;" valid:"comments"`
-	// Put fields in here
-	// FIXME()
 
 	models.CommonTimestampsField
 }

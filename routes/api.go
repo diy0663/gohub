@@ -53,9 +53,14 @@ func RegisterAPIRoutes(r *gin.Engine) {
 
 		// 用户列表
 		userGroup := v1.Group("/users")
-
 		{
 			userGroup.GET("", uc_controller.Index)
+		}
+
+		projectGroup := v1.Group("/projects")
+		pj_controller := new(v1_controller.ProjectsController)
+		{
+			projectGroup.GET("", pj_controller.Index)
 		}
 	}
 
