@@ -7,7 +7,7 @@ import (
 
 	"github.com/diy0663/go_project_packages/config"
 	grom_logger "github.com/diy0663/go_project_packages/logger"
-	"github.com/diy0663/gohub/app/models/token"
+	"github.com/diy0663/gohub/app/models/category"
 	"github.com/diy0663/gohub/pkg/database"
 	"gorm.io/driver/mysql"
 
@@ -48,8 +48,12 @@ func SetupDB() {
 	// 设置每个链接的过期时间
 	database.SQLDB.SetConnMaxLifetime(time.Duration(config.GetInt("database.mysql.max_life_seconds")) * time.Second)
 
-	// 迁移生成数据表结构
-	// database.DB.AutoMigrate(&userModel.User{})
-	//database.DB.AutoMigrate(&project.Project{})
-	database.DB.AutoMigrate(&token.Token{})
+	if config.GetString("app.env") != "production" {
+		// 迁移生成数据表结构
+		// database.DB.AutoMigrate(&userModel.User{})
+		//database.DB.AutoMigrate(&project.Project{})
+		//database.DB.AutoMigrate(&token.Token{})
+		database.DB.AutoMigrate(&category.Category{})
+	}
+
 }
