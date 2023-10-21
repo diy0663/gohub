@@ -3,6 +3,7 @@ package v1
 import (
 	"github.com/diy0663/go_project_packages/response"
 	"github.com/diy0663/gohub/app/models/user"
+	"github.com/diy0663/gohub/app/requests"
 	"github.com/diy0663/gohub/pkg/auth"
 	"github.com/gin-gonic/gin"
 )
@@ -22,6 +23,13 @@ func (user_controller *UsersController) CurrentUser(c *gin.Context) {
 }
 
 func (ctrl *UsersController) Index(c *gin.Context) {
+	// 分页的参数验证
+	request := requests.PaginationRequest{}
+	if ok := requests.RequestValidate(c, &request, requests.Pagination); !ok {
+
+		return
+	}
+
 	data, pager := user.Paginate(c, 10)
 	response.JSON(c, gin.H{
 		"data":  data,

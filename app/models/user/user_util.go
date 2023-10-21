@@ -54,6 +54,10 @@ func Paginate(c *gin.Context, perPage int) (users []User, paging paginator.Pagin
 		query = query.Where("email=?", string(email))
 	}
 
+	if name, isExists := c.GetQuery("name"); isExists {
+		query = query.Where("name=?", string(name))
+	}
+
 	paging = paginator.Paginate(
 		c,
 		query,
