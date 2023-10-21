@@ -1,0 +1,21 @@
+package seeders
+
+
+//todo  需要手动保存之后完成自动import, 检查注意要引入的包是否正确,可能会有重名的
+
+func init() {
+
+    seed.Add("Seed{{StructNamePlural}}Table", func(db *gorm.DB) {
+
+        {{VariableNamePlural}}  := factories.Make{{StructNamePlural}}(10)
+
+        result := db.Table("{{TableName}}").Create(&{{VariableNamePlural}})
+
+        if err := result.Error; err != nil {
+            logger.LogIf(err)
+            return
+        }
+
+        console.Success(fmt.Sprintf("Table [%v] %v rows seeded", result.Statement.Table, result.RowsAffected))
+    })
+}
