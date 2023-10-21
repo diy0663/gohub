@@ -24,7 +24,7 @@ func (ctrl *CategoriesController) Index(c *gin.Context) {
 		return
 	}
 
-	data, pager := category.Paginate(c, 10)
+	data, pager := category.Paginate(c, 20)
 	response.JSON(c, gin.H{
 		"data":  data,
 		"pager": pager,
