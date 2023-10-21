@@ -32,3 +32,9 @@ func GetByMulti(loginId string) (userModel User) {
 	database.DB.Where("phone=?", loginId).Or("email=?", loginId).Or("name=?", loginId).First(&userModel)
 	return
 }
+
+// 不带分页的获取全部数据..
+func All() (users []User) {
+	database.DB.Find(&users)
+	return users
+}

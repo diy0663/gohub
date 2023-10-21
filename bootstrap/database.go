@@ -7,6 +7,7 @@ import (
 
 	"github.com/diy0663/go_project_packages/config"
 	grom_logger "github.com/diy0663/go_project_packages/logger"
+	"github.com/diy0663/gohub/app/models/token"
 	"github.com/diy0663/gohub/pkg/database"
 	"gorm.io/driver/mysql"
 
@@ -50,4 +51,5 @@ func SetupDB() {
 	// 迁移生成数据表结构
 	// database.DB.AutoMigrate(&userModel.User{})
 	//database.DB.AutoMigrate(&project.Project{})
+	database.DB.AutoMigrate(&token.Token{})
 }

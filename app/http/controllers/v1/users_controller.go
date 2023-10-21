@@ -2,6 +2,7 @@ package v1
 
 import (
 	"github.com/diy0663/go_project_packages/response"
+	"github.com/diy0663/gohub/app/models/user"
 	"github.com/diy0663/gohub/pkg/auth"
 	"github.com/gin-gonic/gin"
 )
@@ -20,10 +21,10 @@ func (user_controller *UsersController) CurrentUser(c *gin.Context) {
 
 }
 
-// func (ctrl *UsersController) Index(c *gin.Context) {
-// 	users := user.All()
-// 	response.Data(c, users)
-// }
+func (ctrl *UsersController) Index(c *gin.Context) {
+	users := user.All()
+	response.Data(c, users)
+}
 
 // func (ctrl *UsersController) Show(c *gin.Context) {
 // 	userModel := user.Get(c.Param("id"))

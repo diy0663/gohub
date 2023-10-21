@@ -44,7 +44,7 @@ func NewJWT() *JWT {
 // 登录的时候签发token
 func (jwt *JWT) IssueToken(userID string, userName string) string {
 
-	expireTime := jwt.expireAtTime()
+	expireTime := jwt.ExpireAtTime()
 	claims := JWTCustomClaims{
 
 		UserID:       userID,
@@ -122,7 +122,7 @@ func (jwt *JWT) RefreshToken(c *gin.Context) (string, error) {
 	x := app.TimenowInTimezone().Add(-jwt.MaxRefresh).Unix()
 	// 签发时间+最大过期时间 > 当前 ,就允许刷新
 	if claims.IssuedAt > x {
-		claims.StandardClaims.ExpiresAt = jwt.expireAtTime()
+		claims.StandardClaims.ExpiresAt = jwt.ExpireAtTime()
 		return jwt.createToken(*claims)
 	}
 	return "", ErrTokenExpiredMaxRefresh
@@ -141,7 +141,7 @@ func (jwt *JWT) createToken(claims JWTCustomClaims) (string, error) {
 }
 
 // 计算过期时间戳
-func (jwt *JWT) expireAtTime() int64 {
+func (jwt *JWT) ExpireAtTime() int64 {
 	// 根据时区获取当前时间戳
 
 	timenow := app.TimenowInTimezone()
