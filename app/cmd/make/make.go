@@ -59,6 +59,7 @@ func init() {
 		CmdMakeModel,
 		CmdMakeAPIController,
 		CmdMakeRequest,
+		CmdMakeFactory,
 	)
 
 }
@@ -80,7 +81,7 @@ func makeModelFromString(name string) Model {
 func createFileFromStub(filePath string, stubName string, model Model, variables ...interface{}) {
 	replaces := make(map[string]string)
 	if len(variables) > 0 {
-		// 有额外需要替换的变量,就得在最开始设置了
+		// 有额外需要替换的变量,就得在最开始设置了, 这种只替换一次??
 		replaces = variables[0].(map[string]string)
 	}
 	// 目标文件已存在,就报错,避免被覆盖
