@@ -19,7 +19,7 @@ func init() {
 	// 常用于保证数据库某个字段的值唯一，如用户名、邮箱、手机号、或者分类的名称。
 	// not_exists 参数可以有两种，一种是 2 个参数，一种是 3 个参数：
 	// not_exists:users,email 检查数据库表里是否存在同一条信息
-	// not_exists:users,email,32 排除用户掉 id 为 32 的用户
+	// not_exists:users,email,id<>32 排除用户掉 id 为 32 的用户
 
 	govalidator.AddCustomRule("not_exists", func(field string, rule string,
 		message string, value interface{}) error {
@@ -27,16 +27,21 @@ func init() {
 		parameter := strings.Split(strings.TrimPrefix(rule, "not_exists:"), ",")
 		tableName := parameter[0]
 		dbFiled := parameter[1]
-		var exceptID string
-		if len(parameter) > 2 {
-			exceptID = parameter[2]
-		}
+		// var exceptStr string
+		// if len(parameter) > 2 {
+
+		// 	exceptStr = parameter[2]
+		// }
 
 		requestValue := value.(string)
 
 		query := database.DB.Table(tableName).Where(dbFiled+" = ? ", requestValue)
 		if len(parameter) > 2 {
-			query.Where(dbFiled+" != ? ", exceptID)
+			exceptStr := parameter[2]
+			exceptData := strings.SplitN(exceptStr, "<>", 2)
+			exceptField, exceptValue := exceptData[0], exceptData[1]
+			// 这里写死数据库字段为
+			query.Where(exceptField+" != ? ", exceptValue)
 		}
 
 		var count int64

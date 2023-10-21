@@ -57,6 +57,14 @@ func (ctrl *{{StructNamePlural}}Controller) Store(c *gin.Context) {
 func (ctrl *{{StructNamePlural}}Controller) Update(c *gin.Context) {
 
 /*
+    // 先校验参数是否通过,之后再去查数据库
+    request := requests.{{StructName}}Request{}
+    bindOk := requests.RequestValidate(c, &request, requests.{{StructName}}Save)
+
+	if !bindOk {
+		return
+	}
+
     {{VariableName}}Model := {{PackageName}}.Get(c.Param("id"))
     if {{VariableName}}Model.ID == 0 {
         response.Abort404(c)
@@ -68,15 +76,7 @@ func (ctrl *{{StructNamePlural}}Controller) Update(c *gin.Context) {
         return
     }
 
-    request := requests.{{StructName}}Request{}
-    bindOk, errs := requests.Validate(c, &request, requests.{{StructName}}Save)
-    if !bindOk {
-        return
-    }
-    if len(errs) > 0 {
-        response.ValidationError(c, errs)
-        return
-    }
+
 
     {{VariableName}}Model.FieldName = request.FieldName
     rowsAffected := {{VariableName}}Model.Save()

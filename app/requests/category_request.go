@@ -1,6 +1,8 @@
 package requests
 
 import (
+	"strconv"
+
 	"github.com/gin-gonic/gin"
 	"github.com/thedevsaddam/govalidator"
 )
@@ -14,8 +16,15 @@ type CategoryRequest struct {
 
 func CategorySave(data interface{}, c *gin.Context) map[string][]string {
 
+	not_exists_by_name := "not_exists:categories,name"
+	if c.Param("id") != "" {
+		id, _ := strconv.Atoi(c.Param("id"))
+		if id > 0 {
+			not_exists_by_name += ",id<>" + strconv.Itoa(id)
+		}
+	}
 	rules := govalidator.MapData{
-		"name":        []string{"required", "min_cn:2", "max_cn:8", "not_exists:categories,name"},
+		"name":        []string{"required", "min_cn:2", "max_cn:8", not_exists_by_name},
 		"description": []string{"min_cn:3", "max_cn:255"},
 	}
 	messages := govalidator.MapData{
