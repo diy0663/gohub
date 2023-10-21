@@ -1,6 +1,11 @@
 package user
 
-import "github.com/diy0663/gohub/pkg/database"
+import (
+	"github.com/diy0663/gohub/pkg/app"
+	"github.com/diy0663/gohub/pkg/database"
+	"github.com/diy0663/gohub/pkg/paginator"
+	"github.com/gin-gonic/gin"
+)
 
 // 实用工具类, 特定查询
 
@@ -37,4 +42,25 @@ func GetByMulti(loginId string) (userModel User) {
 func All() (users []User) {
 	database.DB.Find(&users)
 	return users
+}
+
+// 分页列表查询
+func Paginate(c *gin.Context, perPage int) (users []User, paging paginator.Paging) {
+
+	query := database.DB.Model(&User{})
+
+	// 条件查询
+	if email, isExists := c.GetQuery("email"); isExists {
+		query = query.Where("email=?", string(email))
+	}
+
+	paging = paginator.Paginate(
+		c,
+		query,
+		&users,
+		app.V1URL(database.TableNameByStruct(User{})),
+		perPage,
+	)
+
+	return
 }

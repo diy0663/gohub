@@ -22,8 +22,11 @@ func (user_controller *UsersController) CurrentUser(c *gin.Context) {
 }
 
 func (ctrl *UsersController) Index(c *gin.Context) {
-	users := user.All()
-	response.Data(c, users)
+	data, pager := user.Paginate(c, 10)
+	response.JSON(c, gin.H{
+		"data":  data,
+		"pager": pager,
+	})
 }
 
 // func (ctrl *UsersController) Show(c *gin.Context) {
