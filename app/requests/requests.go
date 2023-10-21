@@ -3,7 +3,9 @@ package requests
 import (
 	"errors"
 	"fmt"
+	"strconv"
 	"strings"
+	"unicode/utf8"
 
 	requestsPkg "github.com/diy0663/go_project_packages/requests"
 	"github.com/diy0663/gohub/pkg/database"
@@ -44,6 +46,36 @@ func init() {
 				return errors.New(message)
 			}
 			return fmt.Errorf("%v已经被占用了", requestValue)
+		}
+
+		return nil
+	})
+
+	govalidator.AddCustomRule("max_cn", func(field string, rule string, message string, value interface{}) error {
+		valLength := utf8.RuneCountInString(value.(string))
+		lengthNum, _ := strconv.Atoi(strings.TrimPrefix(rule, "max_cn:"))
+		if valLength > lengthNum {
+			// 如果有自定义错误消息的话，使用自定义消息
+			if message != "" {
+				return errors.New(message)
+			}
+			return fmt.Errorf("长度不能超过 %v 个字", lengthNum)
+
+		}
+
+		return nil
+	})
+
+	govalidator.AddCustomRule("min_cn", func(field string, rule string, message string, value interface{}) error {
+		valLength := utf8.RuneCountInString(value.(string))
+		lengthNum, _ := strconv.Atoi(strings.TrimPrefix(rule, "min_cn:"))
+		if valLength < lengthNum {
+			// 如果有自定义错误消息的话，使用自定义消息
+			if message != "" {
+				return errors.New(message)
+			}
+			return fmt.Errorf("长度至少要 %v 个字", lengthNum)
+
 		}
 
 		return nil
