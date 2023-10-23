@@ -5,13 +5,15 @@ import (
 	"github.com/diy0663/gohub/pkg/database"
 	"github.com/diy0663/gohub/pkg/paginator"
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm/clause"
 )
 
 // todo 保存之后自动import
 // util 里面存的都是直接对数据表的查询操作, 是函数, 不是结构体实现的方法
 
 func Get(idstr string) (topic Topic) {
-	database.DB.Where("id", idstr).First(&topic)
+	// 模型关联
+	database.DB.Preload(clause.Associations).Where("id", idstr).First(&topic)
 	return
 }
 
