@@ -24,10 +24,13 @@ func AuthJWT() gin.HandlerFunc {
 			response.Unauthorized(c, "找不到对应用户，用户可能已删除")
 			return
 		}
-		c.Set("current_user_id", userModel.ID)
+
+		// 注意, 这里的 current_user_id 存的是字符串!
+		c.Set("current_user_id", userModel.GetStringID())
+
 		c.Set("current_user_name", userModel.Name)
 		c.Set("current_user", userModel)
-
+		//panic(auth.CurrentUser(c))
 		c.Next()
 	}
 }
