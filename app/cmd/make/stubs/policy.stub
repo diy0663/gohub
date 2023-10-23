@@ -1,0 +1,13 @@
+package policies
+
+// todo 保存之后自动引入 其他的package
+// 针对下面的各个授权策略做修改
+
+func CanModify{{StructName}}(c *gin.Context, {{VariableName}}Model {{PackageName}}.{{StructName}}) bool {
+    return auth.CurrentUID(c) == {{VariableName}}Model.UserID
+}
+
+// func CanView{{StructName}}(c *gin.Context, {{VariableName}}Model {{PackageName}}.{{StructName}}) bool {}
+// func CanCreate{{StructName}}(c *gin.Context, {{VariableName}}Model {{PackageName}}.{{StructName}}) bool {}
+// func CanUpdate{{StructName}}(c *gin.Context, {{VariableName}}Model {{PackageName}}.{{StructName}}) bool {}
+// func CanDelete{{StructName}}(c *gin.Context, {{VariableName}}Model {{PackageName}}.{{StructName}}) bool {}

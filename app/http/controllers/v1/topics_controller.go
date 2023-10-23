@@ -1,8 +1,11 @@
 package v1
 
 import (
+	"strconv"
+
 	"github.com/diy0663/go_project_packages/response"
 	"github.com/diy0663/gohub/app/models/topic"
+	"github.com/diy0663/gohub/app/policies"
 	"github.com/diy0663/gohub/app/requests"
 	"github.com/diy0663/gohub/pkg/auth"
 	"github.com/gin-gonic/gin"
@@ -103,24 +106,27 @@ func (ctrl *TopicsController) Update(c *gin.Context) {
 
 func (ctrl *TopicsController) Delete(c *gin.Context) {
 
-	/*
-	   topicModel := topic.Get(c.Param("id"))
-	   if topicModel.ID == 0 {
-	       response.Abort404(c)
-	       return
-	   }
+	//todo 最好先判断一下 这个id 是不是数字,之后再去查数据库
+	id, _ := strconv.Atoi(c.Param("id"))
+	if id <= 0 {
+		return
+	}
+	topicModel := topic.Get(strconv.Itoa(id))
+	if topicModel.ID == 0 {
+		response.Abort404(c)
+		return
+	}
 
-	   if ok := policies.CanModifyTopic(c, topicModel); !ok {
-	       response.Abort403(c)
-	       return
-	   }
+	if ok := policies.CanDeleteTopic(c, topicModel); !ok {
+		response.Abort403(c, "无权限删除")
+		return
+	}
 
-	   rowsAffected := topicModel.Delete()
-	   if rowsAffected > 0 {
-	       response.Success(c)
-	       return
-	   }
+	rowsAffected := topicModel.Delete()
+	if rowsAffected > 0 {
+		response.Success(c)
+		return
+	}
 
-	*/
 	response.Abort500(c, "删除失败，请稍后尝试~")
 }
