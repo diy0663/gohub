@@ -7,7 +7,7 @@ import (
 
 	"github.com/diy0663/go_project_packages/config"
 	grom_logger "github.com/diy0663/go_project_packages/logger"
-	"github.com/diy0663/gohub/app/models/topic"
+	"github.com/diy0663/gohub/app/models/link"
 	"github.com/diy0663/gohub/pkg/database"
 	"gorm.io/driver/mysql"
 
@@ -54,7 +54,8 @@ func SetupDB() {
 		//database.DB.AutoMigrate(&project.Project{})
 		//database.DB.AutoMigrate(&token.Token{})
 		//database.DB.AutoMigrate(&category.Category{})
-		database.DB.AutoMigrate(&topic.Topic{})
+		// database.DB.AutoMigrate(&topic.Topic{})
+		database.DB.AutoMigrate(&link.Link{})
 	}
 
 }
