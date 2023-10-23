@@ -1,7 +1,11 @@
 package link
 
 import (
+	"time"
+
+	"github.com/diy0663/go_project_packages/helper"
 	"github.com/diy0663/gohub/pkg/app"
+	"github.com/diy0663/gohub/pkg/cache"
 	"github.com/diy0663/gohub/pkg/database"
 	"github.com/diy0663/gohub/pkg/paginator"
 	"github.com/gin-gonic/gin"
@@ -22,6 +26,18 @@ func GetBy(field, value string) (link Link) {
 
 func All() (links []Link) {
 	database.DB.Find(&links)
+	return
+}
+func AllCached() (links []Link) {
+	cacheKey := "links:all"
+	// 129分钟的缓存
+	expireTime := 120 * time.Minute
+
+	cache.GetObject(cacheKey, &links)
+	if helper.Empty(links) {
+		links = All()
+		cache.Set(cacheKey, links, expireTime)
+	}
 	return
 }
 

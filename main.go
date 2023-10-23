@@ -18,6 +18,7 @@ func init() {
 	//连接数据库
 	bootstrap.SetupDB()
 	bootstrap.SetupRedis()
+	bootstrap.SetCache()
 
 }
 

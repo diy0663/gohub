@@ -4,7 +4,7 @@ go 1.20
 
 require (
 	github.com/bxcodec/faker/v3 v3.8.1
-	github.com/diy0663/go_project_packages v1.0.6
+	github.com/diy0663/go_project_packages v1.0.7
 	github.com/gin-gonic/gin v1.9.1
 	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/iancoleman/strcase v0.2.0
