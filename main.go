@@ -18,6 +18,7 @@ func init() {
 	//连接数据库
 	bootstrap.SetupDB()
 	bootstrap.SetupRedis()
+
 	bootstrap.SetCache()
 
 }
@@ -50,6 +51,7 @@ func main() {
 		make.CmdMake,
 		cmd.CmdTestCommand,
 		cmd.CmdSeed,
+		cmd.CmdCache,
 	)
 	cmd.RegisterDefaultCmd(rootCmd, cmd.CmdServe)
 
