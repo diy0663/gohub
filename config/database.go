@@ -18,8 +18,8 @@ func init() {
 
 			// 连接池配置
 			"max_idle_connections": configPkg.Env("DB_MAX_IDLE_CONNECTIONS", 100),
-			"max_open_connections": configPkg.Env("DB_MAX_OPEN_CONNECTIONS", 25),
-			"max_life_seconds":     configPkg.Env("DB_MAX_LIFE_SECONDS", 5*60),
+			"max_open_connections": configPkg.Env("DB_MAX_OPEN_CONNECTIONS", 100),
+			"max_life_seconds":     configPkg.Env("DB_MAX_LIFE_SECONDS", 10),
 		},
 	})
 }
