@@ -9,7 +9,9 @@ func Get(idstr string) ({{VariableName}} {{StructName}}) {
 }
 
 func GetBy(field, value string) ({{VariableName}} {{StructName}}) {
-    database.DB.Where("? = ?", field, value).First(&{{VariableName}})
+
+	str := fmt.Sprintf("%v= ?", field)
+    database.DB.Where(str, value).First(&{{VariableName}})
     return
 }
 

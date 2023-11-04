@@ -1,6 +1,10 @@
 package token
 
-import "github.com/diy0663/gohub/pkg/database"
+import (
+	"fmt"
+
+	"github.com/diy0663/gohub/pkg/database"
+)
 
 // todo 保存之后自动import
 // util 里面存的都是直接对数据表的查询操作, 是函数, 不是结构体实现的方法
@@ -11,7 +15,8 @@ func Get(idstr string) (token Token) {
 }
 
 func GetBy(field, value string) (token Token) {
-	database.DB.Where("? = ?", field, value).First(&token)
+	str := fmt.Sprintf("%v= ?", field)
+	database.DB.Where(str, value).First(&token)
 	return
 }
 

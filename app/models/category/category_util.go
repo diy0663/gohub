@@ -1,6 +1,8 @@
 package category
 
 import (
+	"fmt"
+
 	"github.com/diy0663/gohub/pkg/app"
 	"github.com/diy0663/gohub/pkg/database"
 	"github.com/diy0663/gohub/pkg/paginator"
@@ -16,7 +18,8 @@ func Get(idstr string) (category Category) {
 }
 
 func GetBy(field, value string) (category Category) {
-	database.DB.Where("? = ?", field, value).First(&category)
+	str := fmt.Sprintf("%v= ?", field)
+	database.DB.Where(str, value).First(&category)
 	return
 }
 

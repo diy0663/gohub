@@ -1,6 +1,7 @@
 package link
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/diy0663/go_project_packages/helper"
@@ -20,7 +21,8 @@ func Get(idstr string) (link Link) {
 }
 
 func GetBy(field, value string) (link Link) {
-	database.DB.Where("? = ?", field, value).First(&link)
+	str := fmt.Sprintf("%v= ?", field)
+	database.DB.Where(str, value).First(&link)
 	return
 }
 

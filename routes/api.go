@@ -113,7 +113,8 @@ func RegisterAPIRoutes(r *gin.Engine) {
 		}
 		fmt.Println(permissions)
 		// 指定针对 超级管理员做所有的授权记录插入
-		superRole := role.GetByName("超级管理员")
+		//superRole := role.GetByName("超级管理员")
+		superRole := role.GetBy("name", "超级管理员")
 		if superRole.ID != 0 {
 			err := casbinpkg.UpdatePermissionByRoleId(int(superRole.ID), permissions)
 			if err != nil {

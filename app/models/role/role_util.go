@@ -1,6 +1,8 @@
 package role
 
 import (
+	"fmt"
+
 	"github.com/diy0663/gohub/pkg/app"
 	"github.com/diy0663/gohub/pkg/database"
 	"github.com/diy0663/gohub/pkg/paginator"
@@ -17,6 +19,12 @@ func Get(idstr string) (role Role) {
 
 func GetByName(value string) (role Role) {
 	database.DB.Where("name= ?", value).First(&role)
+	return
+}
+
+func GetBy(field, value string) (role Role) {
+	str := fmt.Sprintf("%v= ?", field)
+	database.DB.Where(str, value).First(&role)
 	return
 }
 
