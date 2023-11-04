@@ -40,7 +40,7 @@ func (lc *LoginController) LoginByPassword(c *gin.Context) {
 		response.Unauthorized(c, "账号不存在或密码错误")
 	} else {
 
-		tokenData := jwt.NewJWT().IssueToken(userModel.GetStringID(), userModel.Name)
+		tokenData := jwt.NewJWT().IssueToken(userModel.GetStringID(), userModel.Name, userModel.RoleId)
 
 		//非生产环境, 保存一次 token记录
 		if config.GetString("app.env") != "production" {

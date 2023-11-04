@@ -2,6 +2,7 @@ package jwt
 
 import (
 	"errors"
+	"strconv"
 	"strings"
 	"time"
 
@@ -29,6 +30,7 @@ type JWT struct {
 type JWTCustomClaims struct {
 	UserID       string `json:"user_id,omitempty" `
 	UserName     string `json:"user_name,omitempty" `
+	RoleId       string `json:"role_id,omitempty" `
 	ExpireAtTime int64  `json:"expire_at_time,omitempty" `
 	jwtpkg.StandardClaims
 }
@@ -42,13 +44,14 @@ func NewJWT() *JWT {
 }
 
 // 登录的时候签发token
-func (jwt *JWT) IssueToken(userID string, userName string) string {
+func (jwt *JWT) IssueToken(userID string, userName string, roleId int64) string {
 
 	expireTime := jwt.ExpireAtTime()
 	claims := JWTCustomClaims{
 
 		UserID:       userID,
 		UserName:     userName,
+		RoleId:       strconv.FormatInt(roleId, 10),
 		ExpireAtTime: expireTime,
 		StandardClaims: jwtpkg.StandardClaims{
 			NotBefore: app.TimenowInTimezone().Unix(), // 签名生效时间

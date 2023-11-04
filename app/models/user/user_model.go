@@ -4,6 +4,7 @@ import (
 	"github.com/diy0663/go_project_packages/hash"
 	"github.com/diy0663/gohub/app/models"
 	"github.com/diy0663/gohub/pkg/database"
+	"github.com/spf13/cast"
 )
 
 type User struct {
@@ -15,6 +16,7 @@ type User struct {
 	Email    string `json:"-" gorm:"email,not null;index;" valid:"email"`
 	Phone    string `json:"-" gorm:"phone,not null;index;" valid:"phone"`
 	Password string `json:"-" gorm:"password,not null;" valid:"password"`
+	RoleId   int64  `json:"-" gorm:"role_id,not null;index;" valid:"role_id"`
 
 	models.CommonTimestampsField
 }
@@ -36,4 +38,8 @@ func (userModel *User) Comparepassword(_password string) bool {
 func (userModel *User) Save() (rowAffected int64) {
 	result := database.DB.Save(&userModel)
 	return result.RowsAffected
+}
+
+func (userModel *User) GetStringRoleID() string {
+	return cast.ToString(userModel.RoleId)
 }

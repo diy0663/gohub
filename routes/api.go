@@ -1,12 +1,15 @@
 package routes
 
 import (
+	"fmt"
 	"net/http"
 
 	// 别名, 因为 v1 以及早被 路由分组用了
 	v1_controller "github.com/diy0663/gohub/app/http/controllers/v1"
 	"github.com/diy0663/gohub/app/http/controllers/v1/auth"
 	"github.com/diy0663/gohub/app/http/middlewares"
+	"github.com/diy0663/gohub/app/models/role"
+	casbinpkg "github.com/diy0663/gohub/pkg/casbinPkg"
 	"github.com/gin-gonic/gin"
 )
 
@@ -49,7 +52,7 @@ func RegisterAPIRoutes(r *gin.Engine) {
 
 		// 这里面需要注意, 我们路由分组用了v1, 第一版本的控制器包名也是v1,所以只能使用别名 v1_controller 来给控制器这边用
 		uc_controller := new(v1_controller.UsersController)
-		v1.GET("/user", middlewares.AuthJWT(), uc_controller.CurrentUser)
+		v1.GET("/user", middlewares.AuthJWT(), middlewares.CasbinRule(), uc_controller.CurrentUser)
 
 		// 用户列表
 		userGroup := v1.Group("/users")
@@ -96,5 +99,33 @@ func RegisterAPIRoutes(r *gin.Engine) {
 			})
 		})
 	}
+
+	r.GET("getAllRoutes", func(ctx *gin.Context) {
+		all := r.Routes()
+		permissions := make([]casbinpkg.PermissionInfo, 1)
+		for _, v := range all {
+			permission := casbinpkg.PermissionInfo{
+				Path:   v.Path,
+				Method: v.Method,
+			}
+
+			permissions = append(permissions, permission)
+		}
+		fmt.Println(permissions)
+		// 指定针对 超级管理员做所有的授权记录插入
+		superRole := role.GetByName("超级管理员")
+		if superRole.ID != 0 {
+			err := casbinpkg.UpdatePermissionByRoleId(int(superRole.ID), permissions)
+			if err != nil {
+				fmt.Println(err.Error())
+			} else {
+				fmt.Println("超级管理员权限插入成功")
+			}
+
+		} else {
+			fmt.Println("超级管理员角色不存在")
+		}
+
+	})
 
 }
