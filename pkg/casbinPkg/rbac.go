@@ -23,6 +23,19 @@ type PermissionInfo struct {
 	Method string
 }
 
+// CREATE TABLE `casbin_rule` (
+// 	`id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+// 	`ptype` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL, 存 p
+// 	`v0` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,    存 角色id
+// 	`v1` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,	  存  路由path
+// 	`v2` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,    存  路由方法 method
+// 	`v3` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+// 	`v4` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+// 	`v5` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+// 	PRIMARY KEY (`id`),
+// 	UNIQUE KEY `idx_casbin_rule` (`ptype`,`v0`,`v1`,`v2`,`v3`,`v4`,`v5`)
+//   ) ENGINE=InnoDB AUTO_INCREMENT=47 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+
 func GetCasbinRBAC() *casbin.SyncedCachedEnforcer {
 	once.Do(func() {
 
@@ -116,6 +129,7 @@ func UpdatePermissionByRoleId(roleId int, persions []PermissionInfo) error {
 		if _, ok := uniqueMap[key]; !ok {
 			// 去重
 			uniqueMap[key] = true
+			// 权限三元组, 在这里设定了顺序, v0是角色id, v1是路由, v2是方法
 			unRepeatPermissions = append(unRepeatPermissions, []string{roleIdStr, p.Path, p.Method})
 		}
 	}
