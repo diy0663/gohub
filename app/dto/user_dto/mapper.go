@@ -7,6 +7,7 @@ func ConvertUserToDTO(user *user.User) *UserDTO {
 		return nil
 	}
 	return &UserDTO{
+		UserId:    user.GetStringID(),
 		CreatedAt: user.CreatedAt.Format("2006-01-02 15:04:05"),
 		Name:      user.Name,
 		RoleName:  user.Role.Name,
