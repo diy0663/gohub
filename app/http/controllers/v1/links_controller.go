@@ -2,6 +2,7 @@ package v1
 
 import (
 	"github.com/diy0663/go_project_packages/response"
+	"github.com/diy0663/gohub/app/dtos/link_dto"
 	"github.com/diy0663/gohub/app/models/link"
 	"github.com/gin-gonic/gin"
 )
@@ -17,6 +18,7 @@ type LinksController struct {
 func (ctrl *LinksController) Index(c *gin.Context) {
 
 	data := link.AllCached()
+
 	response.Data(c, data)
 
 }
@@ -27,7 +29,8 @@ func (ctrl *LinksController) Show(c *gin.Context) {
 		response.Abort404(c)
 		return
 	}
-	response.Data(c, linkModel)
+	dto := link_dto.ConvertLinkToDTO(&linkModel)
+	response.Data(c, dto)
 }
 
 func (ctrl *LinksController) Store(c *gin.Context) {

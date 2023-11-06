@@ -1,0 +1,25 @@
+package {{PackageName}}_dto
+
+//保存之后自动import
+
+func Convert{{StructName}}ToDTO({{PackageName}} *{{PackageName}}.{{StructName}}) *{{StructName}}DTO {
+	if {{PackageName}} == nil {
+		return nil
+	}
+	return &{{StructName}}DTO{
+		
+		//CreatedAt: {{PackageName}}.CreatedAt.Format("2006-01-02 15:04:05"),
+		
+	}
+}
+
+func Convert{{StructNamePlural}}ToDTO({{VariableNamePlural}} []*{{PackageName}}.{{StructName}}) []*{{StructName}}DTO {
+	if {{VariableNamePlural}} == nil {
+		return nil
+	}
+	var dtos []*{{StructName}}DTO
+	for _, {{VariableName}} := range {{VariableNamePlural}} {
+		dtos = append(dtos, Convert{{StructName}}ToDTO({{VariableName}}))
+	}
+	return dtos
+}

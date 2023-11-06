@@ -85,6 +85,7 @@ func RegisterAPIRoutes(r *gin.Engine) {
 		linksGroup := v1.Group("/links")
 		{
 			linksGroup.GET("", lsc.Index)
+			linksGroup.GET("/:id", lsc.Show)
 		}
 	}
 

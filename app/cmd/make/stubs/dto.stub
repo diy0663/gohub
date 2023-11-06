@@ -1,0 +1,9 @@
+package {{PackageName}}_dto
+
+// todo 保存之后自动import
+
+// 输出单个信息
+type {{StructName}}DTO struct {
+	Id     string `json:"id"`
+	CreatedAt string `json:"created_at" `
+}

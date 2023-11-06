@@ -2,7 +2,7 @@ package v1
 
 import (
 	"github.com/diy0663/go_project_packages/response"
-	"github.com/diy0663/gohub/app/dto/user_dto"
+	"github.com/diy0663/gohub/app/dtos/user_dto"
 	"github.com/diy0663/gohub/app/models/user"
 	"github.com/diy0663/gohub/app/requests"
 	"github.com/diy0663/gohub/pkg/auth"
