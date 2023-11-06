@@ -45,7 +45,7 @@ func All() (users []User) {
 }
 
 // 分页列表查询
-func Paginate(c *gin.Context, perPage int) (users []User, paging paginator.Paging) {
+func Paginate(c *gin.Context, perPage int) (users []*User, paging paginator.Paging) {
 
 	query := database.DB.Model(&User{})
 

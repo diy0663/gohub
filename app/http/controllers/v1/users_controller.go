@@ -2,6 +2,7 @@ package v1
 
 import (
 	"github.com/diy0663/go_project_packages/response"
+	"github.com/diy0663/gohub/app/dto/user_dto"
 	"github.com/diy0663/gohub/app/models/user"
 	"github.com/diy0663/gohub/app/requests"
 	"github.com/diy0663/gohub/pkg/auth"
@@ -31,8 +32,9 @@ func (ctrl *UsersController) Index(c *gin.Context) {
 	}
 
 	data, pager := user.Paginate(c, 10)
+	dto := user_dto.ConvertUsersToDTO(data)
 	response.JSON(c, gin.H{
-		"data":  data,
+		"data":  dto,
 		"pager": pager,
 	})
 }

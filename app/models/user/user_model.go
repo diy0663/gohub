@@ -3,6 +3,7 @@ package user
 import (
 	"github.com/diy0663/go_project_packages/hash"
 	"github.com/diy0663/gohub/app/models"
+	"github.com/diy0663/gohub/app/models/role"
 	"github.com/diy0663/gohub/pkg/database"
 	"github.com/spf13/cast"
 )
@@ -17,6 +18,8 @@ type User struct {
 	Phone    string `json:"-" gorm:"phone,not null;index;" valid:"phone"`
 	Password string `json:"-" gorm:"password,not null;" valid:"password"`
 	RoleId   int64  `json:"-" gorm:"role_id,not null;index;" valid:"role_id"`
+	// 嵌套
+	Role role.Role `json:"role,omitempty" `
 
 	models.CommonTimestampsField
 }

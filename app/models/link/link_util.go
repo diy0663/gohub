@@ -50,7 +50,7 @@ func IsExist(field, value string) bool {
 }
 
 // 分页列表查询
-func Paginate(c *gin.Context, perPage int) (links []Link, paging paginator.Paging) {
+func Paginate(c *gin.Context, perPage int) (links []*Link, paging paginator.Paging) {
 
 	query := database.DB.Model(&Link{})
 
