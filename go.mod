@@ -13,6 +13,7 @@ require (
 	github.com/mgutz/ansi v0.0.0-20200706080929-d51e80ef957d
 	github.com/spf13/cast v1.5.1
 	github.com/spf13/cobra v1.7.0
+	github.com/streadway/amqp v1.1.0
 	github.com/thedevsaddam/govalidator v1.9.10
 	github.com/ulule/limiter/v3 v3.10.0
 	go.uber.org/zap v1.21.0

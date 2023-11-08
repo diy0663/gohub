@@ -52,6 +52,8 @@ func main() {
 		cmd.CmdTestCommand,
 		cmd.CmdSeed,
 		cmd.CmdCache,
+		cmd.CmdSimpleSend,
+		cmd.CmdSimpleReceive,
 	)
 	cmd.RegisterDefaultCmd(rootCmd, cmd.CmdServe)
 
