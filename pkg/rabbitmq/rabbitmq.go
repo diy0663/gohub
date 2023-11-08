@@ -244,3 +244,181 @@ func (r *RabbitMQ) ConsumeFanout() {
 	// 阻塞在这里
 	<-forever
 }
+
+// 路由模式,在交换器上做完全匹配之后转发消息到符合条件的队列上去
+func NewRabbitMQRouting(exchangeName, key string, options ...RabbitMQOption) *RabbitMQ {
+	r := newRabbitMQ("", exchangeName, key, options...)
+	var err error
+	r.conn, err = amqp.Dial(r.Mqurl)
+	r.failOnErr(err, "Failed to connect to RabbitMQ")
+	r.channel, err = r.conn.Channel()
+	r.failOnErr(err, "Failed to open a channel")
+	return r
+}
+
+func (r *RabbitMQ) PublishRouting(message string) {
+	// 1. 尝试创建交换机
+	err := r.channel.ExchangeDeclare(
+		r.Exchange, // name
+		"direct",   // type 注意 ,路由模式就得是 direct 类型
+		true,       // durable 持久化
+		false,      // auto-deleted
+		false,      // internal
+		false,      // no-wait
+		nil,        // arguments
+	)
+	r.failOnErr(err, "Failed to declare an exchange when PublishRouting")
+
+	// 2.发送消息
+	err = r.channel.Publish(
+		r.Exchange, // exchange
+		r.Key,      // routing key
+		false,      // mandatory
+		false,      // immediate
+		amqp.Publishing{
+			ContentType: "text/plain",
+			Body:        []byte(message),
+		})
+	r.failOnErr(err, "Failed to publish a message when PublishRouting")
+}
+
+func (r *RabbitMQ) ConsumeRouting() {
+	// 创建交换器
+	err := r.channel.ExchangeDeclare(
+		r.Exchange, // name
+		"direct",   // type
+		true,       // durable
+		false,      // auto-deleted
+		false,      // internal
+		false,      // no-wait
+		nil,        // arguments
+	)
+	r.failOnErr(err, "Failed to declare an exchange when ConsumeRouting")
+
+	// 创建队列
+	q, err := r.channel.QueueDeclare(
+		"",    // name,随机生产队列名称
+		false, // durable
+		false, // delete when unused
+		true,  // exclusive 独占
+		false, // no-wait
+		nil,   // arguments
+	)
+	r.failOnErr(err, "Failed to declare a queue when ConsumeRouting")
+
+	// 绑定队列到exchange
+	err = r.channel.QueueBind(
+		q.Name, // queue name
+		r.Key,  // routing key
+		r.Exchange,
+		false,
+		nil,
+	)
+	r.failOnErr(err, "Failed to bind a queue with exchange when ConsumeRouting")
+	messages, err := r.channel.Consume(
+		q.Name, // queue
+		"",     // consumer
+		true,   // auto-ack
+		false,  // exclusive
+		false,  // no-local
+		false,  // no-wait
+		nil,    // args
+	)
+	r.failOnErr(err, "Failed to register a consumer when ConsumeRouting")
+	forever := make(chan bool)
+	go func() {
+		for message := range messages {
+			fmt.Printf(" the key "+r.Key+"  Received a message: %s\r\n", message.Body)
+		}
+	}()
+	<-forever
+
+}
+
+// topic 模式,支持模糊匹配
+func NewRabbitMQTopic(exchangeName, key string, options ...RabbitMQOption) *RabbitMQ {
+	r := newRabbitMQ("", exchangeName, key, options...)
+	var err error
+	r.conn, err = amqp.Dial(r.Mqurl)
+	r.failOnErr(err, "Failed to connect to RabbitMQ")
+	r.channel, err = r.conn.Channel()
+	r.failOnErr(err, "Failed to open a channel")
+	return r
+}
+
+func (r *RabbitMQ) PublishTopic(message string) {
+	// 尝试创建交换机
+	err := r.channel.ExchangeDeclare(
+		r.Exchange, // name
+		"topic",    // type
+		true,       // durable
+		false,      // auto-deleted
+		false,      // internal
+		false,      // no-wait
+		nil,        // arguments
+	)
+	r.failOnErr(err, "Failed to declare an exchange when PublishTopic")
+
+	err = r.channel.Publish(
+		r.Exchange, // exchange
+		r.Key,      // routing key
+		false,      // mandatory
+		false,      // immediate
+		amqp.Publishing{
+			ContentType: "text/plain",
+			Body:        []byte(message),
+		})
+	r.failOnErr(err, "Failed to publish a message when PublishTopic")
+
+}
+
+func (r *RabbitMQ) ConsumeTopic() {
+	// 创建交换机
+	err := r.channel.ExchangeDeclare(
+		r.Exchange, // name
+		"topic",    // type
+		true,       // durable
+		false,      // auto-deleted
+		false,      // internal
+		false,      // no-wait
+		nil,        // arguments
+	)
+	r.failOnErr(err, "Failed to declare an exchange when ConsumeTopic")
+	// 创建消息队列
+	q, err := r.channel.QueueDeclare(
+		"",    // name,随机生产队列名称
+		false, // durable
+		false, // delete when unused
+		true,  // exclusive 独占
+		false, // no-wait
+		nil,   // arguments
+	)
+	r.failOnErr(err, "Failed to declare a queue when ConsumeTopic")
+
+	// 绑定队列到交换机
+	r.channel.QueueBind(
+		q.Name, // queue name
+		r.Key,  // routing key
+		r.Exchange,
+		false,
+		nil)
+
+	// 消费消息
+	messages, err := r.channel.Consume(
+		q.Name, // queue
+		"",     // consumer
+		true,   // auto-ack
+		false,  // exclusive
+		false,  // no-local
+		false,  // no-wait
+		nil,    // args
+	)
+	r.failOnErr(err, "Failed to register a consumer when ConsumeTopic")
+	forever := make(chan bool)
+	go func() {
+		for message := range messages {
+			fmt.Printf("\r\nReceived a message: %s\r\n", message.Body)
+		}
+	}()
+	<-forever
+}
