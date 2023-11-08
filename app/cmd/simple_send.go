@@ -22,10 +22,12 @@ var CmdSimpleSend = &cobra.Command{
 func runSimpleSend(cmd *cobra.Command, args []string) {
 
 	console.Success("runSimpleSend....")
-	mq := rabbitmq.NewRabbitMQSimple("SIMPLE_QUEUE_1", rabbitmq.WithUrl("amqp://guest:guest@127.0.0.1:5672/"))
+	queueName := "SIMPLE_QUEUE_FEFAULT"
+	//mq := rabbitmq.NewRabbitMQSimple("SIMPLE_QUEUE_1", rabbitmq.WithUrl("amqp://guest:guest@127.0.0.1:5672/"))
+	mq := rabbitmq.NewRabbitMQSimple(queueName)
 	defer mq.Destory()
 	for i := 0; i <= 10; i++ {
-		mq.PublishSimple(fmt.Sprintf("Message No.%v  from  S_QUEUE_1 \r\n", i))
+		mq.PublishSimple(fmt.Sprintf("Message No.%v  from  %v \r\n", i, queueName))
 	}
 
 }

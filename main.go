@@ -54,6 +54,8 @@ func main() {
 		cmd.CmdCache,
 		cmd.CmdSimpleSend,
 		cmd.CmdSimpleReceive,
+		cmd.CmdFanoutSend,
+		cmd.CmdFanoutReceive,
 	)
 	cmd.RegisterDefaultCmd(rootCmd, cmd.CmdServe)
 

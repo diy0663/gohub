@@ -1,6 +1,8 @@
 package cmd
 
 import (
+	"strconv"
+
 	"github.com/diy0663/gohub/pkg/console"
 	"github.com/diy0663/gohub/pkg/rabbitmq"
 	"github.com/spf13/cobra"
@@ -10,19 +12,20 @@ import (
 
 // todo 这个生成的命令 ,还得记得挂到上层命令那里面去
 
-var CmdSimpleReceive = &cobra.Command{
-	Use:   "simple_receive",
+var CmdFanoutSend = &cobra.Command{
+	Use:   "fanout_send",
 	Short: "HERE PUTS THE COMMAND DESCRIPTION",
-	Run:   runSimpleReceive,
+	Run:   runFanoutSend,
 	Args:  cobra.ExactArgs(0), // 只允许且必须传 1 个参数
 }
 
-func runSimpleReceive(cmd *cobra.Command, args []string) {
+func runFanoutSend(cmd *cobra.Command, args []string) {
 
-	console.Success("runSimpleReceive....")
-	//mq := rabbitmq.NewRabbitMQSimple("SIMPLE_QUEUE_1", rabbitmq.WithUrl("amqp://guest:guest@127.0.0.1:5672/"))
-	queueName := "SIMPLE_QUEUE_FEFAULT"
-	mq := rabbitmq.NewRabbitMQSimple(queueName)
+	console.Success("这是一条成功的提示")
+	mq := rabbitmq.NewRabbitMQFanout("THE_FANOUT_EXCHANE")
 	defer mq.Destory()
-	mq.ConsumeSimple()
+	for i := 0; i <= 10; i++ {
+		mq.PublishFanout("fanout 广播模式生产 的 第" + strconv.Itoa(i) + "条" + "数据 \r\n")
+	}
+
 }

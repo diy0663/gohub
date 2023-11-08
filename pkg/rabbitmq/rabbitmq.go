@@ -117,7 +117,16 @@ func (r *RabbitMQ) ConsumeSimple() {
 		false,       // no-wait
 		nil,         // arguments
 	)
+
 	r.failOnErr(err, "Failed to declare a queue when ConsumeSimple")
+
+	// 在一条消息没被确认处理完之前,不消费新的消息
+	// 设置用于控制消费者从队列中获取消息的速率,均衡worker的工作量
+	err = r.channel.Qos(
+		1, 0, false,
+	)
+	r.failOnErr(err, "Failed to set Qos")
+
 	messages, err := r.channel.Consume(
 		q.Name, // queue
 		"",     // consumer
@@ -134,6 +143,104 @@ func (r *RabbitMQ) ConsumeSimple() {
 			fmt.Printf("Received a message: %s", d.Body)
 		}
 	}()
+	// 阻塞在这里
+	<-forever
+}
+
+// 广播模式
+func NewRabbitMQFanout(exchangeName string, options ...RabbitMQOption) *RabbitMQ {
+	r := newRabbitMQ("", exchangeName, "", options...)
+	var err error
+	r.conn, err = amqp.Dial(r.Mqurl)
+	r.failOnErr(err, "Failed to connect to RabbitMQ")
+	r.channel, err = r.conn.Channel()
+	r.failOnErr(err, "Failed to open a channel")
+	return r
+}
+
+// 广播模式的生产者
+func (r *RabbitMQ) PublishFanout(message string) {
+	// 声明交换机
+	err := r.channel.ExchangeDeclare(
+		r.Exchange, // name
+		"fanout",   // type
+		true,       // durable 持久化
+		false,      // auto-deleted
+		false,      // internal
+		false,      // no-wait
+		nil,        // arguments
+	)
+	r.failOnErr(err, "Failed to declare an exchange when PublishFanout")
+	// 发送广播消息
+	err = r.channel.Publish(
+		r.Exchange, // exchange
+		"",         // routing key
+		false,      // mandatory
+		false,      // immediate
+		amqp.Publishing{
+			ContentType: "text/plain",
+			Body:        []byte(message),
+		})
+	r.failOnErr(err, "Failed to publish a message when PublishFanout")
+}
+
+// 广播模式的订阅接收者
+func (r *RabbitMQ) ConsumeFanout() {
+	err := r.channel.ExchangeDeclare(
+		r.Exchange, // name
+		"fanout",   // type
+		true,       // durable
+		false,      // auto-deleted
+		false,      // internal
+		false,      // no-wait
+		nil,        // arguments
+	)
+	if err != nil {
+		log.Fatalf("Failed to declare an exchange when ConsumeFanout:%s", err.Error())
+	}
+
+	// 创建队列,注意这里的队列不需要写名称
+	q, err := r.channel.QueueDeclare(
+		"",    // name ,随机生产队列名称
+		false, // durable
+		false, // delete when unused
+		true,  // exclusive 独占
+		false, // no-wait
+		nil,   // arguments
+	)
+	r.failOnErr(err, "Failed to declare a queue when ConsumeFanout")
+	// 绑定队列到 交换机
+	err = r.channel.QueueBind(
+		q.Name, // queue name
+		"",     // routing key  广播模式不需要route key
+		r.Exchange,
+		false,
+		nil,
+	)
+	if err != nil {
+		log.Fatalf("Failed to bind a queue with exchange when ConsumeFanout:%s", err.Error())
+	}
+
+	// 消费消息
+	messages, err := r.channel.Consume(
+		q.Name, // queue
+		"",     // consumer
+		true,   // auto-ack
+		false,  // exclusive
+		false,  // no-local
+		false,  // no-wait
+		nil,    // args
+	)
+	if err != nil {
+		log.Fatalf("Failed to register a consumer when ConsumeFanout:%s", err.Error())
+	}
+	forever := make(chan bool)
+	go func() {
+		for message := range messages {
+			fmt.Printf("Received a message: %s", message.Body)
+		}
+	}()
+
 	// 阻塞在这里
 	<-forever
 }
