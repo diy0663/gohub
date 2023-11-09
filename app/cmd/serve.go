@@ -48,7 +48,7 @@ func runWeb(cmd *cobra.Command, args []string) {
 	}()
 
 	// 优雅关闭
-	quit := make(chan os.Signal)
+	quit := make(chan os.Signal, 1)
 	//signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM, syscall.SIGQUIT)
 	// kill (no param) default send syscanll.SIGTERM
 	// kill -2 is syscall.SIGINT
@@ -60,10 +60,7 @@ func runWeb(cmd *cobra.Command, args []string) {
 	if err := srv.Shutdown(ctx); err != nil {
 		console.Error("Server Shutdown Error:" + err.Error())
 	}
-	select {
-	case <-ctx.Done():
-		console.Error("time out  ...")
-	}
+
 	console.Success("Server exiting")
 
 }
