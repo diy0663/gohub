@@ -3,6 +3,7 @@ package routes
 import (
 	"fmt"
 	"net/http"
+	"time"
 
 	// 别名, 因为 v1 以及早被 路由分组用了
 	v1_controller "github.com/diy0663/gohub/app/http/controllers/v1"
@@ -93,8 +94,10 @@ func RegisterAPIRoutes(r *gin.Engine) {
 
 	// 下面的{} 仅仅用于 类似 括起来,方便查看,以及不会搞错作用域之类的用途,用于独立处理
 	{
-		// http://127.0.0.1:8080/v2/
+		// http://127.0.0.1:3000/v2/
 		v2.GET("/", func(c *gin.Context) {
+			// 停3秒,验证是否能优雅关闭(处理完请求再关闭 超时5秒关闭)
+			time.Sleep(3 * time.Second)
 			c.JSON(http.StatusOK, gin.H{
 				"Hello": "V2!",
 			})
