@@ -1,6 +1,7 @@
 package rabbitmq
 
 import (
+	"bytes"
 	"fmt"
 	"log"
 	"time"
@@ -11,6 +12,20 @@ import (
 // todo 应该改为.env 配置化
 const MQURL = "amqp://guest:guest@127.0.0.1:5672/vhost1"
 
+type HandlerFunc func(message string)
+
+// 定义一个基本的队列传输消息结构体
+type MsgData struct {
+	Msg  string `json:"msg,omitempty" `
+	Time string `json:"time,omitempty" `
+}
+
+func BytesToString(b *[]byte) *string {
+	s := bytes.NewBuffer(*b)
+	r := s.String()
+	return &r
+}
+
 type RabbitMQ struct {
 	conn      *amqp.Connection
 	channel   *amqp.Channel
@@ -19,9 +34,10 @@ type RabbitMQ struct {
 	// binding key ,用于路由匹配
 	Key string
 	// 连接配置信息
-	Mqurl        string
-	IsDurable    bool
-	DeliveryMode uint8
+	Mqurl            string
+	IsDurable        bool
+	DeliveryMode     uint8
+	IsConsumeAutoAck bool
 }
 
 type RabbitMQOption func(*RabbitMQ)
@@ -29,6 +45,12 @@ type RabbitMQOption func(*RabbitMQ)
 func WithUrl(url string) RabbitMQOption {
 	return func(r *RabbitMQ) {
 		r.Mqurl = url
+	}
+}
+
+func WithComsumeAutoAck(autoAck bool) RabbitMQOption {
+	return func(r *RabbitMQ) {
+		r.IsConsumeAutoAck = autoAck
 	}
 }
 
@@ -47,6 +69,8 @@ func newRabbitMQ(queueName, exchangeName, key string, options ...RabbitMQOption)
 		// 默认持久化
 		IsDurable:    true,
 		DeliveryMode: 2,
+		// 默认自动应答
+		IsConsumeAutoAck: true,
 	}
 	for _, option := range options {
 		option(r)
@@ -148,19 +172,65 @@ func (r *RabbitMQ) ConsumeSimple() {
 	r.failOnErr(err, "Failed to set Qos")
 
 	messages, err := r.channel.Consume(
-		q.Name, // queue
-		"",     // consumer
-		true,   // auto-ack  自动应答
-		false,  // exclusive
-		false,  // no-local  true则表示 不能将同一个Conenction中生产者发送的消息传递给这个Connection中 的消费者
-		false,  // no-wait
-		nil,    // args
+		q.Name,             // queue
+		"",                 // consumer
+		r.IsConsumeAutoAck, // auto-ack  自动应答
+		false,              // exclusive
+		false,              // no-local  true则表示 不能将同一个Conenction中生产者发送的消息传递给这个Connection中 的消费者
+		false,              // no-wait
+		nil,                // args
 	)
 	r.failOnErr(err, "Failed to register a consumer when ConsumeSimple")
 	forever := make(chan bool)
 	go func() {
 		for d := range messages {
 			fmt.Printf("Received a message: %s", d.Body)
+			if !r.IsConsumeAutoAck {
+				d.Ack(false)
+			}
+		}
+	}()
+	// 阻塞在这里
+	<-forever
+}
+
+func (r *RabbitMQ) ConsumeSimpleWithHandler(hanler HandlerFunc) {
+	q, err := r.channel.QueueDeclare(
+		r.QueueName, // name
+		r.IsDurable, // durable
+		false,       // delete when unused
+		false,       // exclusive
+		false,       // no-wait
+		nil,         // arguments
+	)
+
+	r.failOnErr(err, "Failed to declare a queue when ConsumeSimple")
+
+	// 在一条消息没被确认处理完之前,不消费新的消息
+	// 设置用于控制消费者从队列中获取消息的速率,均衡worker的工作量
+	err = r.channel.Qos(
+		1, 0, false,
+	)
+	r.failOnErr(err, "Failed to set Qos")
+
+	messages, err := r.channel.Consume(
+		q.Name,             // queue
+		"",                 // consumer
+		r.IsConsumeAutoAck, // auto-ack  自动应答
+		false,              // exclusive
+		false,              // no-local  true则表示 不能将同一个Conenction中生产者发送的消息传递给这个Connection中 的消费者
+		false,              // no-wait
+		nil,                // args
+	)
+	r.failOnErr(err, "Failed to register a consumer when ConsumeSimple")
+	forever := make(chan bool)
+	go func() {
+		for d := range messages {
+			s := BytesToString(&d.Body)
+			hanler(*s)
+			if !r.IsConsumeAutoAck {
+				d.Ack(false)
+			}
 		}
 	}()
 	// 阻塞在这里
@@ -244,13 +314,13 @@ func (r *RabbitMQ) ConsumeFanout() {
 
 	// 消费消息
 	messages, err := r.channel.Consume(
-		q.Name, // queue
-		"",     // consumer
-		true,   // auto-ack
-		false,  // exclusive
-		false,  // no-local
-		false,  // no-wait
-		nil,    // args
+		q.Name,             // queue
+		"",                 // consumer
+		r.IsConsumeAutoAck, // auto-ack
+		false,              // exclusive
+		false,              // no-local
+		false,              // no-wait
+		nil,                // args
 	)
 	if err != nil {
 		log.Fatalf("Failed to register a consumer when ConsumeFanout:%s", err.Error())
@@ -259,6 +329,9 @@ func (r *RabbitMQ) ConsumeFanout() {
 	go func() {
 		for message := range messages {
 			fmt.Printf("Received a message: %s", message.Body)
+			if !r.IsConsumeAutoAck {
+				message.Ack(false)
+			}
 		}
 	}()
 
@@ -338,19 +411,22 @@ func (r *RabbitMQ) ConsumeRouting() {
 	)
 	r.failOnErr(err, "Failed to bind a queue with exchange when ConsumeRouting")
 	messages, err := r.channel.Consume(
-		q.Name, // queue
-		"",     // consumer
-		true,   // auto-ack
-		false,  // exclusive
-		false,  // no-local
-		false,  // no-wait
-		nil,    // args
+		q.Name,             // queue
+		"",                 // consumer
+		r.IsConsumeAutoAck, // auto-ack
+		false,              // exclusive
+		false,              // no-local
+		false,              // no-wait
+		nil,                // args
 	)
 	r.failOnErr(err, "Failed to register a consumer when ConsumeRouting")
 	forever := make(chan bool)
 	go func() {
 		for message := range messages {
 			fmt.Printf(" the key "+r.Key+"  Received a message: %s\r\n", message.Body)
+			if !r.IsConsumeAutoAck {
+				message.Ack(false)
+			}
 		}
 	}()
 	<-forever
@@ -428,19 +504,22 @@ func (r *RabbitMQ) ConsumeTopic() {
 
 	// 消费消息
 	messages, err := r.channel.Consume(
-		q.Name, // queue
-		"",     // consumer
-		true,   // auto-ack
-		false,  // exclusive
-		false,  // no-local
-		false,  // no-wait
-		nil,    // args
+		q.Name,             // queue
+		"",                 // consumer
+		r.IsConsumeAutoAck, // auto-ack
+		false,              // exclusive
+		false,              // no-local
+		false,              // no-wait
+		nil,                // args
 	)
 	r.failOnErr(err, "Failed to register a consumer when ConsumeTopic")
 	forever := make(chan bool)
 	go func() {
 		for message := range messages {
 			fmt.Printf("\r\nReceived a message: %s\r\n", message.Body)
+			if !r.IsConsumeAutoAck {
+				message.Ack(false)
+			}
 		}
 	}()
 	<-forever
@@ -460,13 +539,13 @@ func (r *RabbitMQ) PublishDelay(message string, delay time.Duration) {
 	// 1. 尝试创建交换机
 	err := r.channel.ExchangeDeclare(
 		r.Exchange,          // name
-		"x-delayed-message", // type
+		"x-delayed-message", // type todo 重点
 		true,                // durable 持久化
 		true,                // auto-deleted
 		false,               // internal
 		false,               // no-wait
 		amqp.Table{
-			"x-delayed-type": "direct",
+			"x-delayed-type": "direct", // todo 重点
 		}, // arguments
 	)
 	r.failOnErr(err, "Failed to declare an exchange when PublishDelay")
@@ -481,7 +560,7 @@ func (r *RabbitMQ) PublishDelay(message string, delay time.Duration) {
 			Body:         []byte(message),
 			DeliveryMode: r.DeliveryMode,
 			Headers: amqp.Table{
-				"x-delay": delay.Milliseconds(),
+				"x-delay": delay.Milliseconds(), // todo 重点
 			},
 		})
 	r.failOnErr(err, "Failed to publish a message when PublishDelay")
@@ -493,13 +572,13 @@ func (r *RabbitMQ) ConsumeDelay() {
 	// 创建交换机
 	err := r.channel.ExchangeDeclare(
 		r.Exchange,          // name
-		"x-delayed-message", // type
+		"x-delayed-message", // type todo 重点
 		true,                // durable
 		true,                // auto-deleted
 		false,               // internal
 		false,               // no-wait
 		amqp.Table{
-			"x-delayed-type": "direct",
+			"x-delayed-type": "direct", // todo 重点
 		}, // arguments
 	)
 	r.failOnErr(err, "Failed to declare an exchange when ConsumeDelay")
@@ -524,20 +603,24 @@ func (r *RabbitMQ) ConsumeDelay() {
 
 	// 消费消息
 	messages, err := r.channel.Consume(
-		q.Name, // queue
-		"",     // consumer
-		true,   // auto-ack
-		false,  // exclusive
-		false,  // no-local
-		false,  // no-wait
-		nil,    // args
+		q.Name,             // queue
+		"",                 // consumer
+		r.IsConsumeAutoAck, // auto-ack
+		false,              // exclusive
+		false,              // no-local
+		false,              // no-wait
+		nil,                // args
 	)
 	r.failOnErr(err, "Failed to register a consumer when ConsumeDelay")
 	forever := make(chan bool)
 	go func() {
 		for message := range messages {
 			fmt.Printf("%v \r\nReceived a message: %s\r\n", time.Now().Format("2006-01-02 15:04:05"), message.Body)
+			if !r.IsConsumeAutoAck {
+				message.Ack(false)
+			}
 		}
 	}()
 	<-forever
+
 }

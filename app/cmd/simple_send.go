@@ -1,7 +1,9 @@
 package cmd
 
 import (
+	"encoding/json"
 	"fmt"
+	"time"
 
 	"github.com/diy0663/gohub/pkg/console"
 	"github.com/diy0663/gohub/pkg/rabbitmq"
@@ -26,8 +28,12 @@ func runSimpleSend(cmd *cobra.Command, args []string) {
 	//mq := rabbitmq.NewRabbitMQSimple("SIMPLE_QUEUE_1", rabbitmq.WithUrl("amqp://guest:guest@127.0.0.1:5672/"))
 	mq := rabbitmq.NewRabbitMQSimple(queueName)
 	defer mq.Destory()
+	msg := &rabbitmq.MsgData{}
 	for i := 0; i <= 10; i++ {
-		mq.PublishSimple(fmt.Sprintf("Message No.%v  from  %v \r\n", i, queueName))
+		msg.Msg = fmt.Sprintf("Message No.%v  from  %v \r\n", i, queueName)
+		msg.Time = time.Now().Format("2006-01-02 15:04:05")
+		msgBytes, _ := json.Marshal(msg)
+		mq.PublishSimple(string(msgBytes))
 	}
 
 }
