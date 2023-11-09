@@ -60,6 +60,8 @@ func main() {
 		cmd.CmdRoutingSend,
 		cmd.CmdTopicReceive,
 		cmd.CmdTopicSend,
+		cmd.CmdDelayReceive,
+		cmd.CmdDelaySend,
 	)
 	cmd.RegisterDefaultCmd(rootCmd, cmd.CmdServe)
 

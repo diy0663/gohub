@@ -22,8 +22,8 @@ var CmdRoutingSend = &cobra.Command{
 func runRoutingSend(cmd *cobra.Command, args []string) {
 
 	console.Success("runRoutingSend...")
-	mq1 := rabbitmq.NewRabbitMQRouting("the_routing_exchange", "key1")
-	mq2 := rabbitmq.NewRabbitMQRouting("the_routing_exchange", "key2")
+	mq1 := rabbitmq.NewRabbitMQRouting("my_routing_exchange", "key1")
+	mq2 := rabbitmq.NewRabbitMQRouting("my_routing_exchange", "key2")
 	defer mq1.Destory()
 	defer mq2.Destory()
 	for i := 0; i < 10; i++ {

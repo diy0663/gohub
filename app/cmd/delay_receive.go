@@ -10,17 +10,17 @@ import (
 
 // todo 这个生成的命令 ,还得记得挂到上层命令那里面去
 
-var CmdRoutingReceive = &cobra.Command{
-	Use:   "routing_receive",
+var CmdDelayReceive = &cobra.Command{
+	Use:   "delay_receive",
 	Short: "HERE PUTS THE COMMAND DESCRIPTION",
-	Run:   runRoutingReceive,
-	Args:  cobra.ExactArgs(1), // 只允许且必须传 1 个参数
+	Run:   runDelayReceive,
+	Args:  cobra.ExactArgs(0), // 只允许且必须传 1 个参数
 }
 
-func runRoutingReceive(cmd *cobra.Command, args []string) {
+func runDelayReceive(cmd *cobra.Command, args []string) {
 
-	console.Success("runRoutingReceive....")
-	mq := rabbitmq.NewRabbitMQRouting("my_routing_exchange", args[0])
+	console.Success("runDelayReceive....")
+	mq := rabbitmq.NewRabbitMQDelay("test_delay_exchange")
 	defer mq.Destory()
-	mq.ConsumeRouting()
+	mq.ConsumeDelay()
 }

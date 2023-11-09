@@ -3,6 +3,7 @@ package rabbitmq
 import (
 	"fmt"
 	"log"
+	"time"
 
 	"github.com/streadway/amqp"
 )
@@ -18,7 +19,9 @@ type RabbitMQ struct {
 	// binding key ,用于路由匹配
 	Key string
 	// 连接配置信息
-	Mqurl string
+	Mqurl        string
+	IsDurable    bool
+	DeliveryMode uint8
 }
 
 type RabbitMQOption func(*RabbitMQ)
@@ -29,12 +32,21 @@ func WithUrl(url string) RabbitMQOption {
 	}
 }
 
+func WithDurable(durable bool) RabbitMQOption {
+	return func(r *RabbitMQ) {
+		r.IsDurable = durable
+	}
+}
+
 // 其实仅仅是传参而已,并没有正常去生成一个rabbitmq连接实例
 func newRabbitMQ(queueName, exchangeName, key string, options ...RabbitMQOption) *RabbitMQ {
 	r := &RabbitMQ{
 		QueueName: queueName,
 		Exchange:  exchangeName,
 		Key:       key,
+		// 默认持久化
+		IsDurable:    true,
+		DeliveryMode: 2,
 	}
 	for _, option := range options {
 		option(r)
@@ -43,6 +55,13 @@ func newRabbitMQ(queueName, exchangeName, key string, options ...RabbitMQOption)
 	if r.Mqurl == "" {
 		r.Mqurl = MQURL
 	}
+	// 持久化判断
+	if r.IsDurable {
+		r.DeliveryMode = 2
+	} else {
+		r.DeliveryMode = 1
+	}
+
 	return r
 
 }
@@ -89,7 +108,7 @@ func (r *RabbitMQ) PublishSimple(message string) {
 
 	_, err := r.channel.QueueDeclare(
 		r.QueueName, // name
-		false,       // durable 持久化
+		r.IsDurable, // durable 持久化
 		false,       // delete when unused 不用时删除
 		false,       // exclusive 是否独占
 		false,       // no-wait 是否立即
@@ -102,8 +121,9 @@ func (r *RabbitMQ) PublishSimple(message string) {
 		false,       // mandatory
 		false,       // immediate
 		amqp.Publishing{
-			ContentType: "text/plain",
-			Body:        []byte(message),
+			ContentType:  "text/plain",
+			Body:         []byte(message),
+			DeliveryMode: r.DeliveryMode,
 		})
 	r.failOnErr(err, "Failed to publish a message when PublishSimple")
 }
@@ -111,7 +131,7 @@ func (r *RabbitMQ) PublishSimple(message string) {
 func (r *RabbitMQ) ConsumeSimple() {
 	q, err := r.channel.QueueDeclare(
 		r.QueueName, // name
-		false,       // durable
+		r.IsDurable, // durable
 		false,       // delete when unused
 		false,       // exclusive
 		false,       // no-wait
@@ -162,13 +182,13 @@ func NewRabbitMQFanout(exchangeName string, options ...RabbitMQOption) *RabbitMQ
 func (r *RabbitMQ) PublishFanout(message string) {
 	// 声明交换机
 	err := r.channel.ExchangeDeclare(
-		r.Exchange, // name
-		"fanout",   // type
-		true,       // durable 持久化
-		false,      // auto-deleted
-		false,      // internal
-		false,      // no-wait
-		nil,        // arguments
+		r.Exchange,  // name
+		"fanout",    // type
+		r.IsDurable, // durable 持久化
+		false,       // auto-deleted
+		false,       // internal
+		false,       // no-wait
+		nil,         // arguments
 	)
 	r.failOnErr(err, "Failed to declare an exchange when PublishFanout")
 	// 发送广播消息
@@ -178,8 +198,9 @@ func (r *RabbitMQ) PublishFanout(message string) {
 		false,      // mandatory
 		false,      // immediate
 		amqp.Publishing{
-			ContentType: "text/plain",
-			Body:        []byte(message),
+			ContentType:  "text/plain",
+			Body:         []byte(message),
+			DeliveryMode: r.DeliveryMode,
 		})
 	r.failOnErr(err, "Failed to publish a message when PublishFanout")
 }
@@ -187,13 +208,13 @@ func (r *RabbitMQ) PublishFanout(message string) {
 // 广播模式的订阅接收者
 func (r *RabbitMQ) ConsumeFanout() {
 	err := r.channel.ExchangeDeclare(
-		r.Exchange, // name
-		"fanout",   // type
-		true,       // durable
-		false,      // auto-deleted
-		false,      // internal
-		false,      // no-wait
-		nil,        // arguments
+		r.Exchange,  // name
+		"fanout",    // type
+		r.IsDurable, // durable
+		false,       // auto-deleted
+		false,       // internal
+		false,       // no-wait
+		nil,         // arguments
 	)
 	if err != nil {
 		log.Fatalf("Failed to declare an exchange when ConsumeFanout:%s", err.Error())
@@ -201,12 +222,12 @@ func (r *RabbitMQ) ConsumeFanout() {
 
 	// 创建队列,注意这里的队列不需要写名称
 	q, err := r.channel.QueueDeclare(
-		"",    // name ,随机生产队列名称
-		false, // durable
-		false, // delete when unused
-		true,  // exclusive 独占
-		false, // no-wait
-		nil,   // arguments
+		"",          // name ,随机生产队列名称
+		r.IsDurable, // durable
+		false,       // delete when unused
+		true,        // exclusive 独占
+		false,       // no-wait
+		nil,         // arguments
 	)
 	r.failOnErr(err, "Failed to declare a queue when ConsumeFanout")
 	// 绑定队列到 交换机
@@ -259,13 +280,13 @@ func NewRabbitMQRouting(exchangeName, key string, options ...RabbitMQOption) *Ra
 func (r *RabbitMQ) PublishRouting(message string) {
 	// 1. 尝试创建交换机
 	err := r.channel.ExchangeDeclare(
-		r.Exchange, // name
-		"direct",   // type 注意 ,路由模式就得是 direct 类型
-		true,       // durable 持久化
-		false,      // auto-deleted
-		false,      // internal
-		false,      // no-wait
-		nil,        // arguments
+		r.Exchange,  // name
+		"direct",    // type 注意 ,路由模式就得是 direct 类型
+		r.IsDurable, // durable 持久化
+		false,       // auto-deleted
+		false,       // internal
+		false,       // no-wait
+		nil,         // arguments
 	)
 	r.failOnErr(err, "Failed to declare an exchange when PublishRouting")
 
@@ -276,8 +297,9 @@ func (r *RabbitMQ) PublishRouting(message string) {
 		false,      // mandatory
 		false,      // immediate
 		amqp.Publishing{
-			ContentType: "text/plain",
-			Body:        []byte(message),
+			ContentType:  "text/plain",
+			Body:         []byte(message),
+			DeliveryMode: r.DeliveryMode,
 		})
 	r.failOnErr(err, "Failed to publish a message when PublishRouting")
 }
@@ -285,24 +307,24 @@ func (r *RabbitMQ) PublishRouting(message string) {
 func (r *RabbitMQ) ConsumeRouting() {
 	// 创建交换器
 	err := r.channel.ExchangeDeclare(
-		r.Exchange, // name
-		"direct",   // type
-		true,       // durable
-		false,      // auto-deleted
-		false,      // internal
-		false,      // no-wait
-		nil,        // arguments
+		r.Exchange,  // name
+		"direct",    // type
+		r.IsDurable, // durable
+		false,       // auto-deleted
+		false,       // internal
+		false,       // no-wait
+		nil,         // arguments
 	)
 	r.failOnErr(err, "Failed to declare an exchange when ConsumeRouting")
 
 	// 创建队列
 	q, err := r.channel.QueueDeclare(
-		"",    // name,随机生产队列名称
-		false, // durable
-		false, // delete when unused
-		true,  // exclusive 独占
-		false, // no-wait
-		nil,   // arguments
+		"",          // name,随机生产队列名称
+		r.IsDurable, // durable
+		false,       // delete when unused
+		true,        // exclusive 独占
+		false,       // no-wait
+		nil,         // arguments
 	)
 	r.failOnErr(err, "Failed to declare a queue when ConsumeRouting")
 
@@ -349,13 +371,13 @@ func NewRabbitMQTopic(exchangeName, key string, options ...RabbitMQOption) *Rabb
 func (r *RabbitMQ) PublishTopic(message string) {
 	// 尝试创建交换机
 	err := r.channel.ExchangeDeclare(
-		r.Exchange, // name
-		"topic",    // type
-		true,       // durable
-		false,      // auto-deleted
-		false,      // internal
-		false,      // no-wait
-		nil,        // arguments
+		r.Exchange,  // name
+		"topic",     // type
+		r.IsDurable, // durable
+		false,       // auto-deleted
+		false,       // internal
+		false,       // no-wait
+		nil,         // arguments
 	)
 	r.failOnErr(err, "Failed to declare an exchange when PublishTopic")
 
@@ -365,8 +387,9 @@ func (r *RabbitMQ) PublishTopic(message string) {
 		false,      // mandatory
 		false,      // immediate
 		amqp.Publishing{
-			ContentType: "text/plain",
-			Body:        []byte(message),
+			ContentType:  "text/plain",
+			Body:         []byte(message),
+			DeliveryMode: r.DeliveryMode,
 		})
 	r.failOnErr(err, "Failed to publish a message when PublishTopic")
 
@@ -375,23 +398,23 @@ func (r *RabbitMQ) PublishTopic(message string) {
 func (r *RabbitMQ) ConsumeTopic() {
 	// 创建交换机
 	err := r.channel.ExchangeDeclare(
-		r.Exchange, // name
-		"topic",    // type
-		true,       // durable
-		false,      // auto-deleted
-		false,      // internal
-		false,      // no-wait
-		nil,        // arguments
+		r.Exchange,  // name
+		"topic",     // type
+		r.IsDurable, // durable
+		false,       // auto-deleted
+		false,       // internal
+		false,       // no-wait
+		nil,         // arguments
 	)
 	r.failOnErr(err, "Failed to declare an exchange when ConsumeTopic")
 	// 创建消息队列
 	q, err := r.channel.QueueDeclare(
-		"",    // name,随机生产队列名称
-		false, // durable
-		false, // delete when unused
-		true,  // exclusive 独占
-		false, // no-wait
-		nil,   // arguments
+		"",          // name,随机生产队列名称
+		r.IsDurable, // durable
+		false,       // delete when unused
+		true,        // exclusive 独占
+		false,       // no-wait
+		nil,         // arguments
 	)
 	r.failOnErr(err, "Failed to declare a queue when ConsumeTopic")
 
@@ -418,6 +441,102 @@ func (r *RabbitMQ) ConsumeTopic() {
 	go func() {
 		for message := range messages {
 			fmt.Printf("\r\nReceived a message: %s\r\n", message.Body)
+		}
+	}()
+	<-forever
+}
+
+func NewRabbitMQDelay(exchangeName string, options ...RabbitMQOption) *RabbitMQ {
+	r := newRabbitMQ("", exchangeName, "", options...)
+	var err error
+	r.conn, err = amqp.Dial(r.Mqurl)
+	r.failOnErr(err, "Failed to connect to RabbitMQ")
+	r.channel, err = r.conn.Channel()
+	r.failOnErr(err, "Failed to open a channel")
+	return r
+}
+
+func (r *RabbitMQ) PublishDelay(message string, delay time.Duration) {
+	// 1. 尝试创建交换机
+	err := r.channel.ExchangeDeclare(
+		r.Exchange,          // name
+		"x-delayed-message", // type
+		true,                // durable 持久化
+		true,                // auto-deleted
+		false,               // internal
+		false,               // no-wait
+		amqp.Table{
+			"x-delayed-type": "direct",
+		}, // arguments
+	)
+	r.failOnErr(err, "Failed to declare an exchange when PublishDelay")
+
+	err = r.channel.Publish(
+		r.Exchange, // exchange
+		"",         // routing key
+		false,      // mandatory
+		false,      // immediate
+		amqp.Publishing{
+			ContentType:  "text/plain",
+			Body:         []byte(message),
+			DeliveryMode: r.DeliveryMode,
+			Headers: amqp.Table{
+				"x-delay": delay.Milliseconds(),
+			},
+		})
+	r.failOnErr(err, "Failed to publish a message when PublishDelay")
+	fmt.Println(time.Now().Format("2006-01-02 15:04:05"), " [x-delay] pamas", delay)
+
+}
+
+func (r *RabbitMQ) ConsumeDelay() {
+	// 创建交换机
+	err := r.channel.ExchangeDeclare(
+		r.Exchange,          // name
+		"x-delayed-message", // type
+		true,                // durable
+		true,                // auto-deleted
+		false,               // internal
+		false,               // no-wait
+		amqp.Table{
+			"x-delayed-type": "direct",
+		}, // arguments
+	)
+	r.failOnErr(err, "Failed to declare an exchange when ConsumeDelay")
+	q, err := r.channel.QueueDeclare(
+		"",    // name,随机生产队列名称
+		true,  // durable
+		true,  // delete when unused
+		true,  // exclusive 独占
+		false, // no-wait
+		nil,   // arguments
+	)
+	r.failOnErr(err, "Failed to declare a queue when ConsumeDelay")
+
+	// 绑定队列到交换机
+	err = r.channel.QueueBind(
+		q.Name, // queue name
+		r.Key,  // routing key
+		r.Exchange,
+		false,
+		nil)
+	r.failOnErr(err, "Failed to bind a queue with exchange when ConsumeDelay")
+
+	// 消费消息
+	messages, err := r.channel.Consume(
+		q.Name, // queue
+		"",     // consumer
+		true,   // auto-ack
+		false,  // exclusive
+		false,  // no-local
+		false,  // no-wait
+		nil,    // args
+	)
+	r.failOnErr(err, "Failed to register a consumer when ConsumeDelay")
+	forever := make(chan bool)
+	go func() {
+		for message := range messages {
+			fmt.Printf("%v \r\nReceived a message: %s\r\n", time.Now().Format("2006-01-02 15:04:05"), message.Body)
 		}
 	}()
 	<-forever
