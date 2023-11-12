@@ -3,9 +3,11 @@ package bootstrap
 import (
 	"net/http"
 	"strings"
+	"time"
 
 	"github.com/diy0663/gohub/app/http/middlewares"
 	"github.com/diy0663/gohub/routes"
+	"github.com/gin-contrib/timeout"
 	"github.com/gin-gonic/gin"
 )
 
@@ -30,6 +32,21 @@ func registerGlobalMiddleWare(router *gin.Engine) {
 		//gin.Recovery(),
 		middlewares.Recovery(),
 		middlewares.ForceUA(),
+		// 全局设置10s 的超时控制
+		timeout.New(
+			// 设置超时3秒
+			timeout.WithTimeout(time.Second*10),
+			// 设置超时之后的返回提示结果
+			timeout.WithResponse(func(c *gin.Context) {
+				c.JSON(http.StatusOK, gin.H{
+					"error": "the request is time-out !!",
+				})
+			}),
+			// 设置这个路由本身的handler
+			timeout.WithHandler(func(c *gin.Context) {
+				c.Next()
+			}),
+		),
 	)
 }
 

@@ -11,6 +11,7 @@ import (
 	"github.com/diy0663/gohub/app/http/middlewares"
 	"github.com/diy0663/gohub/app/models/role"
 	casbinpkg "github.com/diy0663/gohub/pkg/casbinPkg"
+	"github.com/gin-contrib/timeout"
 	"github.com/gin-gonic/gin"
 )
 
@@ -20,8 +21,10 @@ func RegisterAPIRoutes(r *gin.Engine) {
 	v1 := r.Group("/v1")
 
 	{
-		// http://127.0.0.1:8080/v1/
+		// http://127.0.0.1:3000/v1/
 		v1.GET("/", func(c *gin.Context) {
+			// 验证全局中间件10s 超时是否有效
+			time.Sleep(11 * time.Second)
 			c.JSON(http.StatusOK, gin.H{
 				"Hello": "V1!",
 			})
@@ -102,6 +105,23 @@ func RegisterAPIRoutes(r *gin.Engine) {
 				"Hello": "V2!",
 			})
 		})
+		v2.GET("/timeout", timeout.New(
+			// 设置超时3秒
+			timeout.WithTimeout(time.Second*3),
+			// 设置超时之后的返回提示结果
+			timeout.WithResponse(func(c *gin.Context) {
+				c.JSON(http.StatusOK, gin.H{
+					"Hello": "the request is time-out !!",
+				})
+			}),
+			// 设置这个路由本身的handler
+			timeout.WithHandler(func(c *gin.Context) {
+				time.Sleep(1 * time.Second)
+				c.JSON(http.StatusOK, gin.H{
+					"Hello": " the request is finish  !",
+				})
+			}),
+		))
 	}
 
 	r.GET("getAllRoutes", func(ctx *gin.Context) {
