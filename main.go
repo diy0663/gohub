@@ -20,6 +20,7 @@ func init() {
 	bootstrap.SetupRedis()
 
 	bootstrap.SetCache()
+	bootstrap.SetupTracer()
 
 }
 
