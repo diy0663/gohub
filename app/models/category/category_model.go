@@ -18,6 +18,10 @@ type Category struct {
 	models.CommonTimestampsField
 }
 
+func (category *Category) TableName() string {
+	return "categories"
+}
+
 func (category *Category) Create() {
 	database.DB.Create(&category)
 }

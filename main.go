@@ -63,6 +63,7 @@ func main() {
 		cmd.CmdDelayReceive,
 		cmd.CmdDelaySend,
 		cmd.CmdSimpleReceiveHandler,
+		cmd.CmdPlay,
 	)
 	cmd.RegisterDefaultCmd(rootCmd, cmd.CmdServe)
 
