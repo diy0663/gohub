@@ -1,7 +1,6 @@
 package {{PackageName}}
 
 // todo 保存之后自动import   
-// util 里面存的都是直接对数据表的查询操作, 是函数, 不是结构体实现的方法
 
 func Get(idstr string) ({{VariableName}} {{StructName}}) {
     database.DB.Where("id", idstr).First(&{{VariableName}})
@@ -47,4 +46,67 @@ func Paginate(c *gin.Context, perPage int) ({{VariableNamePlural}} []*{{StructNa
 	)
 
 	return
+}
+
+// 以下是不依赖 database.DB 的写法
+type {{StructName}}Model struct {
+    db *gorm.DB
+}
+
+// 在使用 NewCategoryModel 的时候可以把 经过初始化的*gorm.DB传进来
+func New{{StructName}}Model(db *gorm.DB) *{{StructName}}Model {
+	if db==nil {
+		panic("New{{StructName}}Model , db is nil")
+	}
+	return &{{StructName}}Model{
+		//
+		db: db,
+	}
+}
+
+func ({{VariableName}} *{{StructName}}Model) FindOne(ctx context.Context, id int64) (*{{StructName}}, error) {
+	var result {{StructName}}
+	err := {{VariableName}}.db.WithContext(ctx).Where("id =?", id).First(&result).Error
+	return &result, err
+}
+
+func ({{VariableName}} *{{StructName}}Model) Insert(ctx context.Context, data *{{StructName}}) error {
+	return {{VariableName}}.db.WithContext(ctx).Create(data).Error
+}
+
+func ({{VariableName}} *{{StructName}}Model) Update(ctx context.Context, data *{{StructName}}) error {
+	return {{VariableName}}.db.WithContext(ctx).Save(data).Error
+}
+
+func ({{VariableName}} *{{StructName}}Model) UpdateFiels(ctx context.Context, id int64, data map[string]interface{}) error {
+	return {{VariableName}}.db.WithContext(ctx).Model(&{{StructName}}{}).Where("id =?", id).Updates(data).Error
+}
+
+func ({{VariableName}} *{{StructName}}Model) FindByIds(ctx context.Context, ids []int64) ([]{{StructName}}, error) {
+	var results []{{StructName}}
+	err := {{VariableName}}.db.WithContext(ctx).Where("id IN (?)", ids).Find(&results).Error
+	return results, err
+}
+
+// 原生sql 进行 操作类操作
+// func ({{VariableName}} *{{StructName}}Model) DoExec(cxt context.Context) error {
+// 	return {{VariableName}}.db.WithContext(cxt).Exec("update XX from XX where XX =? ", 1).Error
+// }
+
+
+// 事务处理示例,注意事务不能跨库
+func ({{VariableName}} *{{StructName}}Model)TransactionDeal( id string) error {
+	err :=  {{VariableName}}.db.Transaction(func(tx *gorm.DB) error {
+		var result {{StructName}}
+		err := tx.Where("id=?", id).First(&result).Error
+		if err != nil {
+			//return err
+			return errors.New("查询出错")
+		}
+
+		err = tx.Exec("delete from XX where id = ? ", id).Error
+		return err
+
+	})
+	return err
 }
